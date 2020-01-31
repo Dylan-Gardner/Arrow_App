@@ -7,30 +7,24 @@ import {
   StyleSheet,
 } from 'react-native';
 
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
+import { store, persistor } from './redux/store/store';
+
+import Music from './Music'
+
 import {NativeEventEmitter, NativeModules } from 'react-native';
 
 
 export default class App extends Component {
 
-  componentDidMount(){
-    NativeModules.MusicInfoLibrary.startTrackingMusic();
-    const eventEmitter = new NativeEventEmitter(NativeModules.ToastExample);
-    eventEmitter.addListener('SongUpdate', (event) => {
-       console.log(event.artistName);
-       console.log(event.trackName);
-    });
-
-    eventEmitter.addListener('MusicInfo', (event) => {
-       console.log(event.isPlaying);
-       console.log(event.playbackPosition);
-    });
-  }
-
   render() {
     return (
-      <View style={styles.container}>
-        <Text>I'm the App component</Text>
-      </View>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <Music />
+        </PersistGate>
+      </Provider>
     );
   }
 }
