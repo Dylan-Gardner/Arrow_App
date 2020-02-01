@@ -1,5 +1,3 @@
-/* @flow */
-
 import React, { Component } from 'react';
 import {
   View,
@@ -9,20 +7,19 @@ import {
 
 import {NativeEventEmitter, NativeModules } from 'react-native';
 import { connect } from 'react-redux';
+import {songUpdate, playbackUpdate} from './redux/actions/musicActions'
 
-export default class Music extends Component {
+class Music extends Component {
 
   componentDidMount(){
     NativeModules.MusicInfoLibrary.startTrackingMusic();
     const eventEmitter = new NativeEventEmitter(NativeModules.MusicInfoLibrary);
     eventEmitter.addListener('SongUpdate', (event) => {
-       console.log(event.artistName);
-       console.log(event.trackName);
+       this.props.songUpdate(event.trackLength, event.artistName, event.trackLength);
     });
 
     eventEmitter.addListener('MusicInfo', (event) => {
-       console.log(event.isPlaying);
-       console.log(event.playbackPosition);
+       this.props.playbackUpdate(event.isPlaying, event.playbackPosition);
     });
   }
 
@@ -57,9 +54,11 @@ const mapDispatchToProps = (dispatch) => {
   // Action
   return {
     // Increase Counter
-    songUpdate: (trackName, artistName, trackLength) => dispatch(songUpdate(trackName, artistName, trackLength)),
+    songUpdate: (trackName, artistName, trackLength) => {dispatch(songUpdate(trackName, artistName, trackLength))},
     // Decrease Counter
-    playbackUpdate: (isPlaying, playbackPosition) => dispatch(playbackUpdate(isPlaying, playbackPosition)),
+    playbackUpdate: (isPlaying, playbackPosition) => {dispatch(playbackUpdate(isPlaying, playbackPosition))},
 
   };
 };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Music);

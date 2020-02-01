@@ -19,7 +19,7 @@ const musicReducer = (state = initialState, action) => {
         artistName: action.artist,
         trackLength: action.track_length
       }
-    },
+    }
 
     case 'PlaybackUpdate': {
       return {
