@@ -15,7 +15,7 @@ class Music extends Component {
     NativeModules.MusicInfoLibrary.startTrackingMusic();
     const eventEmitter = new NativeEventEmitter(NativeModules.MusicInfoLibrary);
     eventEmitter.addListener('SongUpdate', (event) => {
-       this.props.songUpdate(event.trackLength, event.artistName, event.trackLength);
+       this.props.songUpdate(event.trackName, event.artistName, event.trackLength);
     });
 
     eventEmitter.addListener('MusicInfo', (event) => {
