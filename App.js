@@ -11,10 +11,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import { store, persistor } from './redux/store/store';
 
-import Music from './Music'
-
-import {NativeEventEmitter, NativeModules } from 'react-native';
-
+import Music from './Music';
+import Map from './Map'
 
 export default class App extends Component {
 
@@ -22,7 +20,7 @@ export default class App extends Component {
     return (
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <Music />
+          <Map />
         </PersistGate>
       </Provider>
     );
