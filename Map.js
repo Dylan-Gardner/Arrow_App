@@ -35,10 +35,10 @@ class Map extends Component {
           const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
             {
-              title: 'Cool Photo App Camera Permission',
+              title: 'Bike App Location Permission',
               message:
-                'Cool Photo App needs access to your camera ' +
-                'so you can take awesome pictures.',
+                'Bike App needs access to your location ' +
+                'so you can use current location.',
               buttonNeutral: 'Ask Me Later',
               buttonNegative: 'Cancel',
               buttonPositive: 'OK',
