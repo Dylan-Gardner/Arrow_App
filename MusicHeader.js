@@ -7,9 +7,22 @@ import {
 
 import {NativeEventEmitter, NativeModules } from 'react-native';
 import { connect } from 'react-redux';
-import {songUpdate, playbackUpdate} from './redux/actions/musicActions'
 
-class Music extends Component {
+import { createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
+
+import {songUpdate, playbackUpdate} from './redux/actions/musicActions'
+import Map from './Map'
+import Navigator from './Navigator'
+
+const TabNavigator = createBottomTabNavigator({
+  Map: Map,
+  Navigator: Navigator,
+});
+
+let Navigation = createAppContainer(TabNavigator);
+
+class MusicHeader extends Component {
 
   componentDidMount(){
     NativeModules.MusicInfoLibrary.startTrackingMusic();
@@ -25,9 +38,7 @@ class Music extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text>I'm the Music component</Text>
-      </View>
+      <Navigation/>
     );
   }
 }
@@ -61,4 +72,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Music);
+export default connect(mapStateToProps, mapDispatchToProps)(MusicHeader);

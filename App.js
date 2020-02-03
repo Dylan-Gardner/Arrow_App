@@ -11,7 +11,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import { store, persistor } from './redux/store/store';
 
-import Music from './Music';
+import MusicHeader from './MusicHeader';
 import Map from './Map'
 
 export default class App extends Component {
@@ -20,7 +20,7 @@ export default class App extends Component {
     return (
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <Map />
+          <MusicHeader />
         </PersistGate>
       </Provider>
     );
