@@ -1,0 +1,13 @@
+export const currUpdate = (latitude, longitude, LATITUDE_DELTA, LONGITUDE_DELTA) => ({
+    type: 'CURR_POS',
+    latitude: latitude,
+    longitude: longitude,
+    LATITUDE_DELTA: LATITUDE_DELTA,
+    LONGITUDE_DELTA: LONGITUDE_DELTA
+  });
+
+  export const destUpdate = (latitude, longitude) => ({
+    type: 'DEST_POS',
+    latitude: latitude,
+    longitude: longitude,
+  });

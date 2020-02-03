@@ -4,24 +4,31 @@ import {
     Text,
     StyleSheet,
     Dimensions,
-    PermissionsAndroid 
+    PermissionsAndroid,
+    StatusBar
 } from 'react-native';
 import MapView ,{PROVIDER_GOOGLE}from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
+import MapViewDirections from 'react-native-maps-directions';
+import { connect } from 'react-redux';
+import {currUpdate, destUpdate} from './redux/actions/mapActions';
+import DirectionBar from './DirectionBar';
+
 
 var {height, width} = Dimensions.get('window');
 
-const ASPECT_RATIO = width / height
-const LATITUDE_DELTA = 0.0922
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
+const BAR_HEIGHT = 60;
+const ASPECT_RATIO = width / (height - BAR_HEIGHT);
+const LATITUDE_DELTA = 0.0622
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const GOOGLE_MAPS_APIKEY = 'AIzaSyBYBKU8sSjEzxGu7IqJfUYWxh2DEPNCX-w';
+
 
 
 class Map extends Component {
 
     constructor(props){
         super(props);
-        this.state = this.getInitialState();
-        this.onRegionChange = this.onRegionChange.bind(this);
         this.getLocation = this.getLocation.bind(this);
     }
 
@@ -66,8 +73,8 @@ class Map extends Component {
                     longitudeDelta: LONGITUDE_DELTA,
                   }
             
-                this.setState({region: initialRegion})
-                console.log(position.coords);
+                this.props.currUpdate(lat, long, LATITUDE_DELTA, LONGITUDE_DELTA);
+                //console.log(position.coords);
             },
             (error) => {
                 // See error code charts below.
@@ -77,36 +84,29 @@ class Map extends Component {
         );
     }
 
-    getInitialState() {
-        return {
-          region: {
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          },
-        };
-    }
-      
-    onRegionChange(region){
-        this.setState({ region });
-    }
-
     
     render() {
         return (
             <View style={styles.container}>
-                <MapView
-                    provider={PROVIDER_GOOGLE}
-                    style={styles.map}
-                    region={this.state.region}
-                    showsUserLocation={true}
-                >
-                  {!!this.state.region.latitude && !!this.state.region.longitude && <MapView.Marker
-                    coordinate={{"latitude":this.state.region.latitude,"longitude":this.state.region.longitude}}
-                    title={"Your Location"}
-                  />}
-                </MapView>
+              <StatusBar hidden={true} />
+              <DirectionBar />
+              <MapView
+                  provider={PROVIDER_GOOGLE}
+                  style={styles.map}
+                  region={this.props.current}
+                  showsUserLocation={true}
+              >
+                {!!this.props.destination.latitude && !!this.props.destination.longitude && <MapView.Marker 
+                  coordinate={{"latitude":this.props.destination.latitude,"longitude":this.props.destination.longitude}}
+                  title={"Destination"}
+                />}
+                <MapViewDirections
+                  origin={this.props.current}
+                  destination={this.props.destination}
+                  apikey={GOOGLE_MAPS_APIKEY}
+                  strokeWidth={2}
+                />
+              </MapView>
             </View>
         );
     }
@@ -114,15 +114,35 @@ class Map extends Component {
 
 const styles = StyleSheet.create({
     container: {
-      ...StyleSheet.absoluteFillObject,
       height: height,
       width: width,
       justifyContent: 'flex-end',
       alignItems: 'center',
     },
     map: {
-      ...StyleSheet.absoluteFillObject,
-    },
+      height: height - BAR_HEIGHT,
+      width: width
+    }
    });
 
-export default Map;
+   // Map State To Props (Redux Store Passes State To Component)
+const mapStateToProps = (state) => {
+  // Redux Store --> Component
+  return {
+    current: state.mapReducer.current,
+    destination: state.mapReducer.destination
+  };
+};
+// Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
+const mapDispatchToProps = (dispatch) => {
+  // Action
+  return {
+    // Increase Counter
+    currUpdate: (latitude, longitude, LATITUDE_DELTA, LONGITUDE_DELTA) => {dispatch(currUpdate(latitude, longitude, LATITUDE_DELTA, LONGITUDE_DELTA))},
+    // Decrease Counter
+    destUpdate: (latitude, longitude) => {dispatch(destUpdate(latitude, longitude))},
+
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Map);

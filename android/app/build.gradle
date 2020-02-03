@@ -129,6 +129,7 @@ android {
 
     defaultConfig {
         applicationId "com.bike_app"
+        multiDexEnabled true
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

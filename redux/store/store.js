@@ -16,6 +16,7 @@ const persistConfig = {
   // Whitelist (Save Specific Reducers)
   whitelist: [
     'musicReducer',
+    'mapReducer'
   ],
   // Blacklist (Don't Save Specific Reducers)
   blacklist: [

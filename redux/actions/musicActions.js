@@ -10,5 +10,4 @@ export const playbackUpdate = (isPlaying, playbackPosition) => ({
   type: 'PlaybackUpdate',
   isPlaying: isPlaying,
   playbackPosition: playbackPosition
-
 })
