@@ -8,6 +8,7 @@ const initialState = {
     destination: {
         latitude: null,
         longitude: null,
+        address: null,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
     }
@@ -33,7 +34,8 @@ const mapReducer = (state = initialState, action) => {
                 destination: {
                     ...state.destination,
                     latitude: action.latitude,
-                    longitude: action.longitude
+                    longitude: action.longitude,
+                    address: action.address
                 }
             }
         }

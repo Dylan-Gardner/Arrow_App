@@ -13,11 +13,11 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 
 import {songUpdate, playbackUpdate} from './redux/actions/musicActions'
 import Map from './Map'
-import Navigator from './Navigator'
+import RideTracking from './RideTracking'
 
 const TabNavigator = createBottomTabNavigator({
   Map: Map,
-  Navigator: Navigator,
+  'Ride Tracking': RideTracking,
 });
 
 let Navigation = createAppContainer(TabNavigator);

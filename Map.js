@@ -4,13 +4,14 @@ import {
     Text,
     StyleSheet,
     Dimensions,
-    PermissionsAndroid,
     StatusBar
 } from 'react-native';
 import MapView ,{PROVIDER_GOOGLE}from 'react-native-maps';
-import Geolocation from 'react-native-geolocation-service';
 import MapViewDirections from 'react-native-maps-directions';
 import { connect } from 'react-redux';
+import RNLocation from 'react-native-location';
+
+
 import {currUpdate, destUpdate} from './redux/actions/mapActions';
 import DirectionBar from './DirectionBar';
 
@@ -21,7 +22,9 @@ const BAR_HEIGHT = 60;
 const ASPECT_RATIO = width / (height - BAR_HEIGHT);
 const LATITUDE_DELTA = 0.0622
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const timeout = 4000;
 const GOOGLE_MAPS_APIKEY = 'AIzaSyBYBKU8sSjEzxGu7IqJfUYWxh2DEPNCX-w';
+let animationTimeout;
 
 
 
@@ -29,59 +32,69 @@ class Map extends Component {
 
     constructor(props){
         super(props);
-        this.getLocation = this.getLocation.bind(this);
     }
 
     componentDidMount() {
-        this.requestLocationPermission();
-        this.getLocation();
+      RNLocation.configure({
+        distanceFilter: 5.0,
+        interval: 5000, // Milliseconds
+        fastestInterval: 1000, // Milliseconds
+        maxWaitTime: 5000, // Milliseconds
+      })
+
+      RNLocation.requestPermission({
+        ios: "whenInUse",
+        android: {
+          detail: "fine"
+        }
+      }).then(granted => {
+          if (granted) {
+            this.locationSubscription = RNLocation.subscribeToLocationUpdates(locations => {
+              console.log(locations[0])
+              var lat = parseFloat(locations[0].latitude)
+              var long = parseFloat(locations[0].longitude)
+              this.props.currUpdate(lat, long, LATITUDE_DELTA, LONGITUDE_DELTA);
+              /* Example location returned
+              {
+                speed: -1,
+                longitude: -0.1337,
+                latitude: 51.50998,
+                accuracy: 5,
+                heading: -1,
+                altitude: 0,
+                altitudeAccuracy: -1
+                floor: 0
+                timestamp: 1446007304457.029,
+                fromMockProvider: false
+              }
+              */
+            })
+          }
+        })
+    }
+    
+    componentWillUnmount() {
+      if (animationTimeout) {
+        clearTimeout(animationTimeout);
+      }
     }
 
-    async requestLocationPermission() {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            {
-              title: 'Bike App Location Permission',
-              message:
-                'Bike App needs access to your location ' +
-                'so you can use current location.',
-              buttonNeutral: 'Ask Me Later',
-              buttonNegative: 'Cancel',
-              buttonPositive: 'OK',
-            },
-          );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log('You can use Location');
-          } else {
-            console.log('Location permission denied');
-          }
-        } catch (err) {
-          console.warn(err);
-        }
-      }
+    focusMap(markers) {
+      console.log(`Markers received to populate map: ${markers}`);
+      this.map.fitToSuppliedMarkers(markers, {edgePadding: 
+        {
+          top: 150,
+          bottom: 150,
+          left: 150,
+          right: 150
+        },
+        animated: true});
+    }
 
-    getLocation() {
-        Geolocation.getCurrentPosition(
-            (position) => {
-                var lat = parseFloat(position.coords.latitude)
-                var long = parseFloat(position.coords.longitude)
-                var initialRegion= {
-                    latitude: lat,
-                    longitude: long,
-                    latitudeDelta: LATITUDE_DELTA,
-                    longitudeDelta: LONGITUDE_DELTA,
-                  }
-            
-                this.props.currUpdate(lat, long, LATITUDE_DELTA, LONGITUDE_DELTA);
-                //console.log(position.coords);
-            },
-            (error) => {
-                // See error code charts below.
-                console.log(error.code, error.message);
-            },
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-        );
+    newDestination = () => {
+      animationTimeout = setTimeout(() => {
+        this.focusMap(['Location', 'Destination'],true);
+      }, timeout);
     }
 
     
@@ -89,23 +102,34 @@ class Map extends Component {
         return (
             <View style={styles.container}>
               <StatusBar hidden={true} />
-              <DirectionBar />
+              <DirectionBar destCallback={this.newDestination}/>
               <MapView
+                  ref={map => {
+                    this.map = map;
+                  }}
                   provider={PROVIDER_GOOGLE}
                   style={styles.map}
                   region={this.props.current}
                   showsUserLocation={true}
               >
+                {!!this.props.current.latitude && !!this.props.current.longitude && <MapView.Marker 
+                  coordinate={{"latitude":this.props.current.latitude,"longitude":this.props.current.longitude}}
+                  opacity={0}
+                  identifier={'Location'}
+                />}
+
                 {!!this.props.destination.latitude && !!this.props.destination.longitude && <MapView.Marker 
                   coordinate={{"latitude":this.props.destination.latitude,"longitude":this.props.destination.longitude}}
-                  title={"Destination"}
+                  identifier={'Destination'}
                 />}
-                <MapViewDirections
+
+                
+                {!!this.props.destination.latitude && !!this.props.destination.longitude && this.props.current.latitude && this.props.current.longitude && <MapViewDirections
                   origin={this.props.current}
                   destination={this.props.destination}
                   apikey={GOOGLE_MAPS_APIKEY}
                   strokeWidth={2}
-                />
+                />}
               </MapView>
             </View>
         );

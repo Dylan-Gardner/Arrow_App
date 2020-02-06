@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@mapbox/polyline": "^1.1.0",
+    "@naturalclar/react-native-sensor-manager": "^0.2.0",
     "@react-native-community/async-storage": "^1.7.1",
     "@react-native-community/masked-view": "^0.1.6",
     "haversine": "^1.1.1",
@@ -19,17 +20,20 @@
     "react-native-geolocation-service": "^3.1.0",
     "react-native-gesture-handler": "^1.5.6",
     "react-native-google-places": "^3.1.2",
+    "react-native-location": "^2.5.0",
     "react-native-maps": "0.26.1",
     "react-native-maps-directions": "^1.7.3",
     "react-native-music-info-library": "file:../react-native-music-info-library",
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.6.4",
     "react-native-screens": "^2.0.0-alpha.34",
+    "react-native-sensors": "^5.3.3",
     "react-navigation": "^4.1.0",
     "react-navigation-tabs": "^2.7.0",
     "react-redux": "^7.1.3",
     "redux": "^4.0.5",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "rxjs": "^6.5.4"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

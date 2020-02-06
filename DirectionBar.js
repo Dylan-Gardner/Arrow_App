@@ -7,19 +7,20 @@ import {destUpdate} from './redux/actions/mapActions'
 var {height, width} = Dimensions.get('window');
 
 class DirectionBar extends Component {
-    state = {
-        dest: null
-      }
     openSearchModal() {
         RNGooglePlaces.openAutocompleteModal()
         .then((place) => {
             //console.log(place);
-            this.setState({dest: place.address});
-            this.props.destUpdate(place.location.latitude, place.location.longitude);
+            this.props.destUpdate(place.location.latitude, place.location.longitude, place.address);
+            this.props.destCallback();
             // place represents user's selection from the
             // suggestions and it is a simplified Google Place object.
         })
         .catch(error => console.log(error.message));  // error is a Javascript Error object
+    }
+
+    clearAddress() {
+        this.props.destUpdate(null, null, null);
     }
     render() {
         return (
@@ -28,12 +29,17 @@ class DirectionBar extends Component {
                         style={styles.input}
                         onPress={() => this.openSearchModal()}
                     >
-                        {this.state.dest == null && 
+                        {this.props.destination.address == null && 
                         <Text>Search</Text>
                         }
-                        {this.state.dest != null && 
-                        <Text> {this.state.dest} </Text>
+                        {this.props.destination.address != null && 
+                        <Text> {this.props.destination.address} </Text>
                         }
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.clearAddress()}>
+                        <Text>
+                            Clear
+                        </Text>
                     </TouchableOpacity>
                 </View>
         );
@@ -74,7 +80,7 @@ const mapStateToProps = (state) => {
     // Action
     return {
       // Decrease Counter
-      destUpdate: (latitude, longitude) => {dispatch(destUpdate(latitude, longitude))},
+      destUpdate: (latitude, longitude, address) => {dispatch(destUpdate(latitude, longitude, address))},
   
     };
   };

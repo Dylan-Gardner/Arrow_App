@@ -34,6 +34,16 @@ target 'Bike_App' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  rn_maps_path = '../node_modules/react-native-maps'
+  # This should already be auto-added for you, if not add the line below
+  pod 'react-native-maps', path: rn_maps_path
+
+  
+  pod 'react-native-google-maps', :path => rn_maps_path
+  pod 'GoogleMaps' 
+  pod 'Google-Maps-iOS-Utils'
+  pod 'GooglePlaces'
+
 
   target 'Bike_AppTests' do
     inherit! :search_paths
@@ -43,12 +53,21 @@ target 'Bike_App' do
   use_native_modules!
 end
 
-target 'Bike_App-tvOS' do
-  # Pods for Bike_App-tvOS
-
-  target 'Bike_App-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    if target.name == 'react-native-google-places'
+      target.build_configurations.each do |config|
+        config.build_settings['CLANG_ENABLE_MODULES'] = 'No'
+      end
+    end
+    if target.name == 'react-native-google-maps'
+      target.build_configurations.each do |config|
+        config.build_settings['CLANG_ENABLE_MODULES'] = 'No'
+      end
+    end
+    if target.name == "React"
+      target.remove_from_project
+    end
   end
-
 end
+

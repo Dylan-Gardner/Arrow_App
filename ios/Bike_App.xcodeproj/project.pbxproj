@@ -12,14 +12,12 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		1A1FC7A4868F49C0634A809A /* libPods-Bike_App-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9135F8FD8C9922700B68F6B5 /* libPods-Bike_App-tvOS.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* Bike_AppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* Bike_AppTests.m */; };
 		F60DC48D43E5B2602FF61919 /* libPods-Bike_AppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DA456D08560EA463A24A5EC /* libPods-Bike_AppTests.a */; };
 		F61762627257AE198D79E017 /* libPods-Bike_App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A2DBFF26A8767E8A75F74FE /* libPods-Bike_App.a */; };
-		F7FF11E836081AE1E253575A /* libPods-Bike_App-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFC1080BC8B3CF0F426A8142 /* libPods-Bike_App-tvOSTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,17 +51,11 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Bike_App/main.m; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* Bike_App-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bike_App-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Bike_App-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Bike_App-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		31DAA74C4006C50010E44F02 /* Pods-Bike_App-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bike_App-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Bike_App-tvOS/Pods-Bike_App-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		6C91B7774B6350F07A899B53 /* Pods-Bike_App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bike_App.release.xcconfig"; path = "Target Support Files/Pods-Bike_App/Pods-Bike_App.release.xcconfig"; sourceTree = "<group>"; };
-		875E9D83B57E2C110190C940 /* Pods-Bike_App-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bike_App-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-Bike_App-tvOSTests/Pods-Bike_App-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		87976B1C7D7C4C5E6DB2DC07 /* Pods-Bike_App-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bike_App-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-Bike_App-tvOS/Pods-Bike_App-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		8DA456D08560EA463A24A5EC /* libPods-Bike_AppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bike_AppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9135F8FD8C9922700B68F6B5 /* libPods-Bike_App-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bike_App-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A2DBFF26A8767E8A75F74FE /* libPods-Bike_App.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bike_App.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9EA00FBBB781A1969EEBE86F /* Pods-Bike_AppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bike_AppTests.release.xcconfig"; path = "Target Support Files/Pods-Bike_AppTests/Pods-Bike_AppTests.release.xcconfig"; sourceTree = "<group>"; };
 		A1830351B3948908735E3EBD /* Pods-Bike_AppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bike_AppTests.debug.xcconfig"; path = "Target Support Files/Pods-Bike_AppTests/Pods-Bike_AppTests.debug.xcconfig"; sourceTree = "<group>"; };
-		A3FAABE4AE7BD0887FCC67D9 /* Pods-Bike_App-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bike_App-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-Bike_App-tvOSTests/Pods-Bike_App-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		BFC1080BC8B3CF0F426A8142 /* libPods-Bike_App-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bike_App-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F915A35AC60A2F29732C073F /* Pods-Bike_App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bike_App.debug.xcconfig"; path = "Target Support Files/Pods-Bike_App/Pods-Bike_App.debug.xcconfig"; sourceTree = "<group>"; };
@@ -90,7 +82,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A1FC7A4868F49C0634A809A /* libPods-Bike_App-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,7 +89,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F7FF11E836081AE1E253575A /* libPods-Bike_App-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,8 +132,6 @@
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				9A2DBFF26A8767E8A75F74FE /* libPods-Bike_App.a */,
-				9135F8FD8C9922700B68F6B5 /* libPods-Bike_App-tvOS.a */,
-				BFC1080BC8B3CF0F426A8142 /* libPods-Bike_App-tvOSTests.a */,
 				8DA456D08560EA463A24A5EC /* libPods-Bike_AppTests.a */,
 			);
 			name = Frameworks;
@@ -187,10 +175,6 @@
 			children = (
 				F915A35AC60A2F29732C073F /* Pods-Bike_App.debug.xcconfig */,
 				6C91B7774B6350F07A899B53 /* Pods-Bike_App.release.xcconfig */,
-				87976B1C7D7C4C5E6DB2DC07 /* Pods-Bike_App-tvOS.debug.xcconfig */,
-				31DAA74C4006C50010E44F02 /* Pods-Bike_App-tvOS.release.xcconfig */,
-				A3FAABE4AE7BD0887FCC67D9 /* Pods-Bike_App-tvOSTests.debug.xcconfig */,
-				875E9D83B57E2C110190C940 /* Pods-Bike_App-tvOSTests.release.xcconfig */,
 				A1830351B3948908735E3EBD /* Pods-Bike_AppTests.debug.xcconfig */,
 				9EA00FBBB781A1969EEBE86F /* Pods-Bike_AppTests.release.xcconfig */,
 			);
@@ -245,7 +229,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Bike_App-tvOS" */;
 			buildPhases = (
-				1A52A5FC7212CEC920B6F35F /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
 				2D02E4771E0B4A5D006451C7 /* Sources */,
 				2D02E4781E0B4A5D006451C7 /* Frameworks */,
@@ -265,7 +248,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Bike_App-tvOSTests" */;
 			buildPhases = (
-				E27D1278A2DBB04A2545D89C /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
 				2D02E48E1E0B4A5D006451C7 /* Resources */,
@@ -374,28 +356,6 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		1A52A5FC7212CEC920B6F35F /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Bike_App-tvOS-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -472,28 +432,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bike_App/Pods-Bike_App-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E27D1278A2DBB04A2545D89C /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Bike_App-tvOSTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -683,7 +621,6 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 87976B1C7D7C4C5E6DB2DC07 /* Pods-Bike_App-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -711,7 +648,6 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 31DAA74C4006C50010E44F02 /* Pods-Bike_App-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -739,7 +675,6 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A3FAABE4AE7BD0887FCC67D9 /* Pods-Bike_App-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -766,7 +701,6 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 875E9D83B57E2C110190C940 /* Pods-Bike_App-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
