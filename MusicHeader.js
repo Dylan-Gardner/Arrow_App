@@ -14,10 +14,12 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 import {songUpdate, playbackUpdate} from './redux/actions/musicActions'
 import Map from './Map'
 import RideTracking from './RideTracking'
+import Settings from './settings/Settings'
 
 const TabNavigator = createBottomTabNavigator({
   Map: Map,
   'Ride Tracking': RideTracking,
+  Settings: Settings,
 });
 
 let Navigation = createAppContainer(TabNavigator);
@@ -25,7 +27,7 @@ let Navigation = createAppContainer(TabNavigator);
 class MusicHeader extends Component {
 
   componentDidMount(){
-    NativeModules.MusicInfoLibrary.startTrackingMusic();
+    /*NativeModules.MusicInfoLibrary.startTrackingMusic();
     const eventEmitter = new NativeEventEmitter(NativeModules.MusicInfoLibrary);
     eventEmitter.addListener('SongUpdate', (event) => {
        this.props.songUpdate(event.trackName, event.artistName, event.trackLength);
@@ -33,7 +35,7 @@ class MusicHeader extends Component {
 
     eventEmitter.addListener('MusicInfo', (event) => {
        this.props.playbackUpdate(event.isPlaying, event.playbackPosition);
-    });
+    });*/
   }
 
   render() {
