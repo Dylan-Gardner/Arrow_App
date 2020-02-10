@@ -1,10 +1,4 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-} from 'react-native';
-
 import {NativeEventEmitter, NativeModules } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -27,15 +21,15 @@ let Navigation = createAppContainer(TabNavigator);
 class MusicHeader extends Component {
 
   componentDidMount(){
-    /*NativeModules.MusicInfoLibrary.startTrackingMusic();
-    const eventEmitter = new NativeEventEmitter(NativeModules.MusicInfoLibrary);
+    NativeModules.SpotifyInfo.startService();
+    const eventEmitter = new NativeEventEmitter(NativeModules.SpotifyInfo);
     eventEmitter.addListener('SongUpdate', (event) => {
-       this.props.songUpdate(event.trackName, event.artistName, event.trackLength);
+      this.props.songUpdate(event.track_name, event.artist_name, event.track_length);
     });
 
-    eventEmitter.addListener('MusicInfo', (event) => {
-       this.props.playbackUpdate(event.isPlaying, event.playbackPosition);
-    });*/
+    eventEmitter.addListener('PosUpdate', (event) => {
+      this.props.playbackUpdate(!event.isPaused, event.position);
+    });
   }
 
   render() {
@@ -44,12 +38,6 @@ class MusicHeader extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 // Map State To Props (Redux Store Passes State To Component)
 const mapStateToProps = (state) => {

@@ -16,6 +16,8 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* Bike_AppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* Bike_AppTests.m */; };
+		421EB3BE23F1DE0200B7E0AA /* SpotifyiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 421EB3BD23F1DE0200B7E0AA /* SpotifyiOS.framework */; };
+		421EB3C223F2140600B7E0AA /* Header-Bridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421EB3C123F2140600B7E0AA /* Header-Bridge.swift */; };
 		F60DC48D43E5B2602FF61919 /* libPods-Bike_AppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DA456D08560EA463A24A5EC /* libPods-Bike_AppTests.a */; };
 		F61762627257AE198D79E017 /* libPods-Bike_App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A2DBFF26A8767E8A75F74FE /* libPods-Bike_App.a */; };
 /* End PBXBuildFile section */
@@ -51,6 +53,9 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Bike_App/main.m; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* Bike_App-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bike_App-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Bike_App-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Bike_App-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		421EB3BD23F1DE0200B7E0AA /* SpotifyiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyiOS.framework; sourceTree = "<group>"; };
+		421EB3C023F2140600B7E0AA /* Bike_App-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bike_App-Bridging-Header.h"; sourceTree = "<group>"; };
+		421EB3C123F2140600B7E0AA /* Header-Bridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Header-Bridge.swift"; sourceTree = "<group>"; };
 		6C91B7774B6350F07A899B53 /* Pods-Bike_App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bike_App.release.xcconfig"; path = "Target Support Files/Pods-Bike_App/Pods-Bike_App.release.xcconfig"; sourceTree = "<group>"; };
 		8DA456D08560EA463A24A5EC /* libPods-Bike_AppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bike_AppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A2DBFF26A8767E8A75F74FE /* libPods-Bike_App.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bike_App.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +80,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F61762627257AE198D79E017 /* libPods-Bike_App.a in Frameworks */,
+				421EB3BE23F1DE0200B7E0AA /* SpotifyiOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,6 +128,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				421EB3C123F2140600B7E0AA /* Header-Bridge.swift */,
+				421EB3C023F2140600B7E0AA /* Bike_App-Bridging-Header.h */,
 			);
 			name = Bike_App;
 			sourceTree = "<group>";
@@ -129,6 +137,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				421EB3BD23F1DE0200B7E0AA /* SpotifyiOS.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				9A2DBFF26A8767E8A75F74FE /* libPods-Bike_App.a */,
@@ -178,7 +187,6 @@
 				A1830351B3948908735E3EBD /* Pods-Bike_AppTests.debug.xcconfig */,
 				9EA00FBBB781A1969EEBE86F /* Pods-Bike_AppTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -275,6 +283,9 @@
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
+					13B07F861A680F5B00A75B9A = {
+						LastSwiftMigration = 1130;
+					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
 						ProvisioningStyle = Automatic;
@@ -291,6 +302,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -489,6 +501,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				421EB3C223F2140600B7E0AA /* Header-Bridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -541,6 +554,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A1830351B3948908735E3EBD /* Pods-Bike_AppTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -564,6 +578,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9EA00FBBB781A1969EEBE86F /* Pods-Bike_AppTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = Bike_AppTests/Info.plist;
@@ -585,10 +600,17 @@
 			baseConfigurationReference = F915A35AC60A2F29732C073F /* Pods-Bike_App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEFINES_MODULE = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Bike_App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				NEW_SETTING = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -596,6 +618,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Bike_App;
+				SWIFT_OBJC_BRIDGING_HEADER = "Bike_App-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -605,9 +631,16 @@
 			baseConfigurationReference = 6C91B7774B6350F07A899B53 /* Pods-Bike_App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Bike_App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				NEW_SETTING = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -615,6 +648,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Bike_App;
+				SWIFT_OBJC_BRIDGING_HEADER = "Bike_App-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

@@ -205,6 +205,10 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
   - React-jsinspector (0.61.5)
+  - react-native-ble-plx (1.1.1):
+    - React
+    - react-native-ble-plx-swift
+  - react-native-ble-plx-swift (1.1.1)
   - react-native-google-maps (0.26.1):
     - Google-Maps-iOS-Utils (= 2.1.0)
     - GoogleMaps (= 3.2.0)
@@ -216,8 +220,6 @@ PODS:
   - react-native-location (2.5.0):
     - React
   - react-native-maps (0.26.1):
-    - React
-  - react-native-music-info-library (1.0.0):
     - React
   - react-native-safe-area-context (0.6.4):
     - React
@@ -290,11 +292,12 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-ble-plx (from `../node_modules/react-native-ble-plx`)
+  - react-native-ble-plx-swift (from `../node_modules/react-native-ble-plx`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-google-places (from `../node_modules/react-native-google-places`)
   - react-native-location (from `../node_modules/react-native-location`)
   - react-native-maps (from `../node_modules/react-native-maps`)
-  - react-native-music-info-library (from `../../react-native-music-info-library`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -351,6 +354,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-ble-plx:
+    :path: "../node_modules/react-native-ble-plx"
+  react-native-ble-plx-swift:
+    :path: "../node_modules/react-native-ble-plx"
   react-native-google-maps:
     :path: "../node_modules/react-native-maps"
   react-native-google-places:
@@ -359,8 +366,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-location"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
-  react-native-music-info-library:
-    :path: "../../react-native-music-info-library"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   React-RCTActionSheet:
@@ -417,11 +422,12 @@ SPEC CHECKSUMS:
   React-jsi: cb2cd74d7ccf4cffb071a46833613edc79cdf8f7
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
+  react-native-ble-plx: 304c7bee074a05581672c9990f375b3906808718
+  react-native-ble-plx-swift: eb64f02b988becb84a60164aba9fab5d6ddb6dc8
   react-native-google-maps: 2e2e697dab576abd5809d78cd74e775865b62bf7
   react-native-google-places: 1531c5b40622f71b6dacfb476e30be9e08e857b8
   react-native-location: 9c53c0957756f7d70e8fdc76b1c7ed85867c8d0b
   react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
-  react-native-music-info-library: b8781f0a3335e239563acd4e3abc8ab9880ff7b6
   react-native-safe-area-context: 042dfc9d4db17196841df962ba9497f6e7a5bd02
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
@@ -441,6 +447,6 @@ SPEC CHECKSUMS:
   RNSensors: 60197256ecd4e1e906dcaf6d634793f876eaa63b
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 357f396b618da0427aa50fd00a3d65935b7a84eb
+PODFILE CHECKSUM: 0ec6f7e3898dbb3a5821ca05e37dfb86079d92b1
 
 COCOAPODS: 1.8.4
