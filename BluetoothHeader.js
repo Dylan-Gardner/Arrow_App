@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 
-import { BleManager } from 'react-native-ble-plx';
+import { BleManager, BleManagerOptions } from 'react-native-ble-plx';
 import MusicHeader from './MusicHeader';
 
 class BluetoothHeader extends Component {
     constructor(props) {
         super(props);
         this.state = {  };
-        this.manager = new BleManager();
+        this.manager = new BleManager();//new BleManagerOptions(restoreStateIdentifier, restoreStateFunction));
     }
 
     componentDidMount() {
