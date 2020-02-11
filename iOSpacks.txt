@@ -1,3 +1,0 @@
-react-native-maps
-music
-google places

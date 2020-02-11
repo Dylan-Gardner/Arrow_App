@@ -41,9 +41,11 @@ class BluetoothHeader extends Component {
                     })
                     .then((device) => {
                     // Do work on device with services and characteristics
+                        console.log(device)
                     })
                     .catch((error) => {
                         // Handle errors
+                        console.log(error)
                     });
             }
         });
