@@ -1,29 +1,67 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
+import { connect } from 'react-redux';
+
+import {connected, disconnected} from './redux/actions/bluetoothActions'
 
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 
 import { BleManager } from 'react-native-ble-plx';
 import MusicHeader from './MusicHeader';
+const baseUUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+const sendUUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
+const recvUUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
 
 class BluetoothHeader extends Component {
     constructor(props) {
         super(props);
-        this.state = { device: null };
+        this.state = { 
+            device: null,
+         };
         this.manager = new BleManager();//new BleManagerOptions(restoreStateIdentifier, restoreStateFunction));
     }
 
     componentDidMount() {
         const subscription = this.manager.onStateChange((state) => {
             if (state === 'PoweredOn') {
-                this.scanAndConnect();
+                this.scanBluetooth();
                 subscription.remove();
             }
         }, true);
     }
 
-    scanAndConnect() {
+    connectBluetooth() {
+        this.state.device.connect()
+        .then((device) => {
+            return device.discoverAllServicesAndCharacteristics()
+        })
+        .then((device) => {
+        // Do work on device with services and characteristics
+            this.props.deviceConnect();
+            const sub = device.onDisconnected((error, device) => {
+                this.props.deviceDisconected();
+                console.log(error.message)
+                //device.cancelConnection((error,device) => {this.setState({device:device})})
+                sub.remove();
+                this.connectBluetooth();
+            })
+            device.monitorCharacteristicForService(baseUUID, recvUUID, (error, characteristic) => {
+                if (error) {
+                    console.log(error.message)
+                    return
+                }
+                console.log(Base64.decode(characteristic.value))
+                })
+        })
+        .catch((error) => {
+            // Handle errors
+            console.log(error)
+        });
+
+    }
+
+    scanBluetooth() {
         this.manager.startDeviceScan(null, null, (error, device) => {
             if (error) {
                 // Handle error (scanning will be stopped automatically)
@@ -32,43 +70,34 @@ class BluetoothHeader extends Component {
     
             if (device.name === 'Adafruit Bluefruit LE') {
                 this.manager.stopDeviceScan();
-    
                 // Proceed with connection.
-                this.device = device
-                this.device.connect()
-                    .then((device) => {
-                        return device.discoverAllServicesAndCharacteristics()
-                    })
-                    .then((device) => {
-                    // Do work on device with services and characteristics
-                        var obj = {music: 'Song'}
-                        let objJsonStr = JSON.stringify(obj);
-                        let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
-                        device.writeCharacteristicWithResponseForService('6e400001-b5a3-f393-e0a9-e50e24dcca9e', '6e400002-b5a3-f393-e0a9-e50e24dcca9e', objJsonB64)
-                        .then((characteristic) => {
-                            console.log(characteristic)
-                            return 
-                        })
-                        device.monitorCharacteristicForService('6e400001-b5a3-f393-e0a9-e50e24dcca9e', '6e400003-b5a3-f393-e0a9-e50e24dcca9e', (error, characteristic) => {
-                            if (error) {
-                              this.error(error.message)
-                              return
-                            }
-                            console.log(Base64.decode(characteristic.value))
-                          })
-                    })
-                    .catch((error) => {
-                        // Handle errors
-                        console.log(error)
-                    });
+                this.setState({device:device})
+                this.connectBluetooth();
+                
             }
         });
+    }
+
+    sendMessage = (message) => {
+        if (this.state.device && this.props.deviceConnected){
+            console.log("send")
+            console.log(message)
+            let objJsonStr = JSON.stringify(message)
+            let objJsonB64 = Buffer.from(objJsonStr).toString("base64")
+            this.state.device.writeCharacteristicWithResponseForService(baseUUID, sendUUID, objJsonB64)
+            .then((characteristic) => {
+                console.log(characteristic)
+                return 
+            })
+        }else{
+            console.log("Not Connected");
+        }
     }
 
 
     render() {
         return (
-            <MusicHeader/>
+            <MusicHeader sendMessageCallback={(message) => this.sendMessage(message)}/>
         );
     }
 }
@@ -201,4 +230,20 @@ var Base64 = {
     }
 }
 
-export default BluetoothHeader;
+const mapStateToProps = (state) => {
+    // Redux Store --> Component
+    return {
+      deviceConnected: state.bluetoothReducer.deviceConnected
+    };
+  };
+  // Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
+  const mapDispatchToProps = (dispatch) => {
+    // Action
+    return {
+      deviceConnect: () => {dispatch(connected())},
+      deviceDisconected: () => {dispatch(disconnected())},
+    };
+  };
+  
+export default connect(mapStateToProps, mapDispatchToProps)(BluetoothHeader);
+

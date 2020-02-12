@@ -24,10 +24,12 @@ class MusicHeader extends Component {
     NativeModules.SpotifyInfo.startService();
     const eventEmitter = new NativeEventEmitter(NativeModules.SpotifyInfo);
     eventEmitter.addListener('SongUpdate', (event) => {
+      //this.props.sendMessageCallback({track:event.track_name, artist:event.artist_name});
       this.props.songUpdate(event.track_name, event.artist_name, event.track_length);
     });
 
     eventEmitter.addListener('PosUpdate', (event) => {
+      //this.props.sendMessageCallback({paused:event.isPaused});
       this.props.playbackUpdate(!event.isPaused, event.position);
     });
   }
