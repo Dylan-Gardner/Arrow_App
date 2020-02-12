@@ -57,7 +57,7 @@ const mapDispatchToProps = (dispatch) => {
     // Increase Counter
     songUpdate: (trackName, artistName, trackLength) => {dispatch(songUpdate(trackName, artistName, trackLength))},
     // Decrease Counter
-    playbackUpdate: (isPlaying, playbackPosition) => {dispatch(playbackUpdate(isPlaying, playbackPosition))},
+    playbackUpdate: (isPlaying, playbackPosition) => {dispatch(playbackUpdate(isPlaying, playbackPosition))}, // add function in here to be called to send bluetooth data
 
   };
 };
