@@ -6,8 +6,6 @@
 //  Copyright © 2020 Facebook. All rights reserved.
 //
 
-#import <SpotifyiOS/SpotifyiOS.h>
-
 #ifndef Bike_App_Bridging_Header_h
 #define Bike_App_Bridging_Header_h
 

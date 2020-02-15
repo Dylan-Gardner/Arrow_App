@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
 import { connect } from 'react-redux';
 
 import {connected, disconnected} from './redux/actions/bluetoothActions'
 
 global.Buffer = global.Buffer || require('buffer').Buffer
 
-
 import { BleManager } from 'react-native-ble-plx';
 import MusicHeader from './MusicHeader';
+
+
 const baseUUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
 const sendUUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
 const recvUUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
@@ -42,7 +42,6 @@ class BluetoothHeader extends Component {
             const sub = device.onDisconnected((error, device) => {
                 this.props.deviceDisconected();
                 console.log(error.message)
-                //device.cancelConnection((error,device) => {this.setState({device:device})})
                 sub.remove();
                 this.connectBluetooth();
             })
@@ -52,6 +51,7 @@ class BluetoothHeader extends Component {
                     return
                 }
                 console.log(Base64.decode(characteristic.value))
+                //console.log(msgpack.decode(characteristic.value))
                 })
         })
         .catch((error) => {
@@ -80,15 +80,17 @@ class BluetoothHeader extends Component {
 
     sendMessage = (message) => {
         if (this.state.device && this.props.deviceConnected){
-            console.log("send")
             console.log(message)
             let objJsonStr = JSON.stringify(message)
             let objJsonB64 = Buffer.from(objJsonStr).toString("base64")
-            this.state.device.writeCharacteristicWithResponseForService(baseUUID, sendUUID, objJsonB64)
-            .then((characteristic) => {
-                console.log(characteristic)
-                return 
-            })
+            var sendArray = objJsonB64.match(/.{1,20}/g)
+            for (const seg of sendArray) {
+                this.state.device.writeCharacteristicWithoutResponseForService(baseUUID, sendUUID, seg)
+                .then((characteristic) => {
+                    //console.log(Base64.decode(characteristic))
+                    return 
+                })
+            }
         }else{
             console.log("Not Connected");
         }
@@ -97,7 +99,7 @@ class BluetoothHeader extends Component {
 
     render() {
         return (
-            <MusicHeader sendMessageCallback={(message) => this.sendMessage(message)}/>
+            <MusicHeader sendMessageCallback={this.sendMessage}/>
         );
     }
 }

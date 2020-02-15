@@ -17,20 +17,12 @@ const musicReducer = (state = initialState, action) => {
         // Redux Store
         trackName: action.track,
         artistName: action.artist,
-        trackLength: action.track_length
+        trackLength: action.track_length,
+        isPlaying: action.isPlaying, 
+        playbackPosition:action.playbackPosition
       }
     }
 
-    case 'PlaybackUpdate': {
-      return {
-
-        ...state,
-
-        isPlaying: action.isPlaying,
-        playbackPosition: action.playbackPosition
-
-      }
-    }
     // Default
     default: {
       return state;

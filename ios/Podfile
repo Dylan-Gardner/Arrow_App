@@ -45,6 +45,9 @@ target 'Bike_App' do
   pod 'GooglePlaces'
   
   pod 'react-native-ble-plx-swift', :path => '../node_modules/react-native-ble-plx'
+  
+  pod 'RNEventEmitter', :path => "../node_modules/react-native-events"
+  pod 'RNSpotifyRemote', :path => '../node_modules/react-native-spotify-remote'
 
 
   target 'Bike_AppTests' do

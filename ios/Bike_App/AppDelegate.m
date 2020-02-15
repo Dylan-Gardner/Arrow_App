@@ -11,8 +11,13 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <GoogleMaps/GoogleMaps.h>
+#import <React/RCTLog.h>
+#import <RNSpotifyRemote.h>
+
 @import GooglePlaces; 
 @import GoogleMaps;
+
+
 
 @implementation AppDelegate
 
@@ -20,7 +25,7 @@
 {
   [GMSServices provideAPIKey:@"AIzaSyBYBKU8sSjEzxGu7IqJfUYWxh2DEPNCX-w"];
   [GMSPlacesClient provideAPIKey:@"AIzaSyBYBKU8sSjEzxGu7IqJfUYWxh2DEPNCX-w"];
-
+    
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"Bike_App"
@@ -44,5 +49,11 @@
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
 }
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)URL options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options
+{
+  return [[RNSpotifyRemoteAuth sharedInstance] application:application openURL:URL options:options];
+}
+
 
 @end

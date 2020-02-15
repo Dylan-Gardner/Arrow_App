@@ -15,9 +15,11 @@ import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.PlayerApi;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 
-import com.spotify.protocol.client.Subscription;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Track;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SpotifyInfo extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
@@ -38,13 +40,7 @@ public class SpotifyInfo extends ReactContextBaseJavaModule implements Lifecycle
         return "SpotifyInfo";
     }
 
-    @ReactMethod
-    public void sampleMethod() {
-        WritableMap params = Arguments.createMap();
-        params.putString("test", "called");
-        sendEvent(reactContext, "Test", params);
-        Log.d("MUSIC", "CALLED");
-    }
+
 
     @ReactMethod
     public void startService() {
@@ -73,23 +69,8 @@ public class SpotifyInfo extends ReactContextBaseJavaModule implements Lifecycle
 
     private void connected(){
         mPlayerApi = mSpotifyAppRemote.getPlayerApi();
-        mPlayerApi.subscribeToPlayerState()
-                .setEventCallback(playerState -> {
-                    final Track track = playerState.track;
-                    if (track != null) {
-                        Log.d("MUSIC", track.name + " by " + track.artist.name + " " + track.duration);
-                        WritableMap params = Arguments.createMap();
-                        params.putString("track_name", track.name);
-                        params.putString("artist_name", track.artist.name);
-                        params.putDouble("track_length", track.duration);
-                        sendEvent(reactContext, "SongUpdate", params);
-                    }
-                    Log.d("MUSIC", "isPaused: " + playerState.isPaused + " position: " + playerState.playbackPosition);
-                    WritableMap params = Arguments.createMap();
-                    params.putBoolean("isPaused", playerState.isPaused);
-                    params.putDouble("position", playerState.playbackPosition);
-                    sendEvent(reactContext, "PosUpdate", params);
-                });
+        Timer timer = new Timer();
+        timer.schedule(new GetState(), 0, 1000);
     }
 
     private void sendEvent(ReactApplicationContext reactContext,
@@ -98,6 +79,21 @@ public class SpotifyInfo extends ReactContextBaseJavaModule implements Lifecycle
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
+    }
+
+    class GetState extends TimerTask {
+        public void run() {
+            PlayerState playerState = mPlayerApi.getPlayerState().await().getData();
+            Track track = playerState.track;
+            WritableMap params = Arguments.createMap();
+            params.putString("track_name", track.name);
+            params.putString("artist_name", track.artist.name);
+            params.putDouble("track_length", track.duration);
+            Log.d("MUSIC", "isPaused: " + playerState.isPaused + " position: " + playerState.playbackPosition);
+            params.putBoolean("isPaused", playerState.isPaused);
+            params.putDouble("position", playerState.playbackPosition);
+            sendEvent(reactContext, "SongUpdate", params);
+        }
     }
 
 

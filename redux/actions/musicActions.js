@@ -1,13 +1,11 @@
 // Login
-export const songUpdate = (trackName, artistName, trackLength) => ({
+export const songUpdate = (trackName, artistName, trackLength, isPaused, position) => ({
   type: 'SongUpdate',
   track: trackName,
   artist: artistName,
-  track_length: trackLength
+  track_length: trackLength,
+  isPlaying: !isPaused,
+  playbackPosition: position
 });
 
-export const playbackUpdate = (isPlaying, playbackPosition) => ({
-  type: 'PlaybackUpdate',
-  isPlaying: isPlaying,
-  playbackPosition: playbackPosition
-})
+
