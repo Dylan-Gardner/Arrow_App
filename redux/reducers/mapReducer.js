@@ -2,13 +2,17 @@ const initialState = {
     current: {
         latitude: 37.78825,
         longitude: -122.4324,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
     },
     destination: {
         latitude: null,
         longitude: null,
         address: null,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+    },
+    view: {
+        latitude: 37.78825,
+        longitude: -122.4324,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
     }
@@ -20,8 +24,6 @@ const mapReducer = (state = initialState, action) => {
             return {
                 ...state,
                 current:{
-                    longitudeDelta: action.LONGITUDE_DELTA,
-                    latitudeDelta: action.LATITUDE_DELTA,
                     latitude: action.latitude,
                     longitude: action.longitude
                 }
@@ -37,6 +39,18 @@ const mapReducer = (state = initialState, action) => {
                     longitude: action.longitude,
                     address: action.address
                 }
+            }
+        }
+        case 'VIEW_UPDATE': {
+            return {
+                ...state,
+                view: {
+                    latitude: action.latitude,
+                    longitude: action.longitude,
+                    latitudeDelta: action.LATITUDE_DELTA,
+                    longitudeDelta: action.LONGITUDE_DELTA
+                }
+
             }
         }
         default:

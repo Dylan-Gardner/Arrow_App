@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import RNLocation from 'react-native-location';
 
 
-import {currUpdate, destUpdate} from './redux/actions/mapActions';
+import {currUpdate, destUpdate, viewUpdate} from './redux/actions/mapActions';
 import DirectionBar from './DirectionBar';
 
 
@@ -69,6 +69,9 @@ class Map extends Component {
               }
               */
             })
+            RNLocation.getLatestLocation({ timeout: 60000 }).then(location => {
+              this.props.viewUpdate(location.latitude, location.longitude, 0.0922,0.0421,)
+            })
           }
         })
     }
@@ -97,6 +100,10 @@ class Map extends Component {
       }, timeout);
     }
 
+    regionChange(region){
+      this.props.viewUpdate(region.latitude, region.longitude, region.latitudeDelta, region.longitudeDelta)
+    }
+
     
     render() {
         return (
@@ -109,7 +116,8 @@ class Map extends Component {
                   }}
                   provider={PROVIDER_GOOGLE}
                   style={styles.map}
-                  region={this.props.current}
+                  onRegionChange={(region)=>this.regionChange(region)}
+                  initialRegion={this.props.view}
                   showsUserLocation={true}
               >
                 {!!this.props.current.latitude && !!this.props.current.longitude && <MapView.Marker 
@@ -144,8 +152,9 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
     map: {
-      height: height - BAR_HEIGHT,
-      width: width
+      height: height - BAR_HEIGHT-50,
+      width: width,
+      marginBottom: 50
     }
    });
 
@@ -154,7 +163,8 @@ const mapStateToProps = (state) => {
   // Redux Store --> Component
   return {
     current: state.mapReducer.current,
-    destination: state.mapReducer.destination
+    destination: state.mapReducer.destination,
+    view: state.mapReducer.view
   };
 };
 // Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
@@ -162,9 +172,11 @@ const mapDispatchToProps = (dispatch) => {
   // Action
   return {
     // Increase Counter
-    currUpdate: (latitude, longitude, LATITUDE_DELTA, LONGITUDE_DELTA) => {dispatch(currUpdate(latitude, longitude, LATITUDE_DELTA, LONGITUDE_DELTA))},
+    currUpdate: (latitude, longitude) => {dispatch(currUpdate(latitude, longitude))},
     // Decrease Counter
     destUpdate: (latitude, longitude) => {dispatch(destUpdate(latitude, longitude))},
+
+    viewUpdate: (latitude, longitude, LATITUDE_DELTA, LONGITUDE_DELTA) => {dispatch(viewUpdate(latitude, longitude, LATITUDE_DELTA, LONGITUDE_DELTA))}
 
   };
 };
