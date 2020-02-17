@@ -9,9 +9,9 @@ import {
 
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
-import { store, persistor } from './redux/store/store';
+import { store, persistor } from './src/redux/store/store';
 
-import BluetoothHeader from './BluetoothHeader';
+import BluetoothHeader from './src/BluetoothHeader';
 
 export default class App extends Component {
 

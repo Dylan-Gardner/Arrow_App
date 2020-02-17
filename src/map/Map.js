@@ -1,16 +1,19 @@
 import React, {Component} from 'react';
-import {View, Dimensions, StyleSheet, Image, Text} from 'react-native';
+import {View, Dimensions, StyleSheet, Image, Text, StatusBar} from 'react-native';
 
 import {connect} from 'react-redux';
 import RNLocation from 'react-native-location';
-import exampleIcon from '../images/marker.png';
+import exampleIcon from '../../images/marker.png';
 
 import {currUpdate, destUpdate, viewUpdate} from '../redux/actions/mapActions';
 import DirectionBar from './DirectionBar';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
+import {directionsClient} from '../../MapboxClient';
+import {lineString as makeLineString} from '@turf/helpers';
 
 var {height, width} = Dimensions.get('window');
+import env from '../../env.json'
 
 const BAR_HEIGHT = 60;
 
@@ -19,12 +22,13 @@ class Map extends Component {
     super(props);
     this.state = {
       featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
+      route: null,
     };
   }
 
   componentDidMount() {
     MapboxGL.setAccessToken(
-      'pk.eyJ1IjoiZHlsYW5nYXJkbmVyOTgiLCJhIjoiY2s2cHBkcjJ2MWlqaTNtczhzOHRmYmFqOSJ9.GyoVm5F5fYPsURVkpLeOdw',
+      env['accessToken'],
     );
     RNLocation.configure({
       distanceFilter: 5.0,
@@ -70,14 +74,34 @@ class Map extends Component {
       ],
       type: 'Point',
     });
-    feature.id = `${Date.now()}`;
+    feature.id = `marker`;
     this.setState({
-      featureCollection: MapboxGL.geoUtils.makeFeatureCollection(
+      featureCollection: MapboxGL.geoUtils.addToFeatureCollection(
         this.state.featureCollection,
         feature,
       ),
     });
+    this.createLine()
   };
+
+  async createLine(){
+    const reqOptions = {
+      waypoints: [
+        {coordinates: [this.props.current.longitude, this.props.current.latitude]},
+        {coordinates: [this.props.destination.longitude, this.props.destination.latitude]},
+      ],
+      profile: 'cycling',
+      geometries: 'geojson',
+    };
+
+    const res = await directionsClient.getDirections(reqOptions).send();
+
+    console.log(res)
+
+    this.setState({
+      route: makeLineString(res.body.routes[0].geometry.coordinates),
+    });
+  }
 
   clearDestination = () => {
     this.setState({
@@ -92,32 +116,42 @@ class Map extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar hidden={true} />
         <DirectionBar
           destCallback={this.newDestination}
           clearCallback={this.clearDestination}
         />
-        {!!this.props.view.latitude && (
-          <MapboxGL.MapView style={styles.map} onPress={this.onPress}>
-            <MapboxGL.UserLocation visible={true} />
-            <MapboxGL.Camera
-              zoomLevel={12}
-              centerCoordinate={[
-                this.props.view.longitude,
-                this.props.view.latitude,
-              ]}
+        {!!this.props.view.latitude &&
+        <MapboxGL.MapView style={styles.map} onPress={this.onPress}>
+          <MapboxGL.UserLocation visible={true} />
+          <MapboxGL.Camera
+            zoomLevel={12}
+            centerCoordinate={[
+              this.props.view.longitude,
+              this.props.view.latitude,
+            ]}
+          />
+          <MapboxGL.ShapeSource
+            id="symbolLocationSource"
+            hitbox={{width: 20, height: 20}}
+            shape={this.state.featureCollection}>
+            <MapboxGL.SymbolLayer
+              id="symbolLocationSymbols"
+              minZoomLevel={1}
+              style={style.icon}
             />
-            <MapboxGL.ShapeSource
-              id="symbolLocationSource"
-              hitbox={{width: 20, height: 20}}
-              shape={this.state.featureCollection}>
-              <MapboxGL.SymbolLayer
-                id="symbolLocationSymbols"
-                minZoomLevel={1}
-                style={style.icon}
-              />
-            </MapboxGL.ShapeSource>
-          </MapboxGL.MapView>
-        )}
+          </MapboxGL.ShapeSource>
+          {!!this.state.route &&
+          <MapboxGL.ShapeSource id="routeSource" shape={this.state.route}>
+            <MapboxGL.LineLayer
+              id="routeFill"
+              style={layerStyles.route}
+              belowLayerID="originInnerCircle"
+            />
+          </MapboxGL.ShapeSource>
+  }
+        </MapboxGL.MapView>
+        }
       </View>
     );
   }
@@ -131,9 +165,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   map: {
-    height: height - BAR_HEIGHT - 70,
+    height: height - BAR_HEIGHT - 50,
     width: width,
-    marginBottom: 20,
+    marginBottom: 0,
   },
 });
 const style = {
