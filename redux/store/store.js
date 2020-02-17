@@ -1,8 +1,8 @@
 // Imports: Dependencies
 import AsyncStorage from '@react-native-community/async-storage';
-import { createStore, applyMiddleware } from 'redux';
-import { createLogger } from 'redux-logger';
-import { persistStore, persistReducer } from 'redux-persist';
+import {createStore, applyMiddleware} from 'redux';
+import {createLogger} from 'redux-logger';
+import {persistStore, persistReducer} from 'redux-persist';
 
 // Imports: Redux
 import rootReducer from '../reducers/index';
@@ -14,32 +14,23 @@ const persistConfig = {
   // Storage Method (React Native)
   storage: AsyncStorage,
   // Whitelist (Save Specific Reducers)
-  whitelist: [
-    'musicReducer',
-    'mapReducer'
-  ],
+  whitelist: [],
   // Blacklist (Don't Save Specific Reducers)
-  blacklist: [
-  
-  ],
+  blacklist: [],
 };
 
 // Middleware: Redux Persist Persisted Reducer
-const persistedReducer = persistReducer(persistConfig, rootReducer)
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 // Redux: Store
 const store = createStore(
   persistedReducer,
-  applyMiddleware(
-    //createLogger(),
-  ),
+  applyMiddleware(),
+  //createLogger(),
 );
 
 // Middleware: Redux Persist Persister
 let persistor = persistStore(store);
 
 // Exports
-export {
-  store,
-  persistor,
-};
+export {store, persistor};

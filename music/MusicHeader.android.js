@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import { connect } from 'react-redux';
 
-import {songUpdate} from './redux/actions/musicActions'
-import NavigationHeader from './NavigationHeader';
+import {songUpdate} from '../redux/actions/musicActions'
+import NavigationHeader from '../NavigationHeader';
 
 class MusicHeader extends Component {
     constructor(props){

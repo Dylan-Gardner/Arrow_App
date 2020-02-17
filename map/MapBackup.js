@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import RNLocation from 'react-native-location';
 
 
-import {currUpdate, destUpdate, viewUpdate} from './redux/actions/mapActions';
+import {currUpdate, destUpdate, viewUpdate} from '../redux/actions/mapActions';
 import DirectionBar from './DirectionBar';
 
 
