@@ -8,8 +8,8 @@ import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
 const TabNavigator = createBottomTabNavigator({
-    //Map: Map,
-    //'Ride Tracking': RideTracking,
+    Map: Map,
+    'Ride Tracking': RideTracking,
     Settings: Settings,
   },
   {

@@ -10,12 +10,9 @@
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
-#import <GoogleMaps/GoogleMaps.h>
 #import <React/RCTLog.h>
 #import <RNSpotifyRemote.h>
 
-@import GooglePlaces; 
-@import GoogleMaps;
 
 
 
@@ -23,8 +20,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [GMSServices provideAPIKey:@"AIzaSyBYBKU8sSjEzxGu7IqJfUYWxh2DEPNCX-w"];
-  [GMSPlacesClient provideAPIKey:@"AIzaSyBYBKU8sSjEzxGu7IqJfUYWxh2DEPNCX-w"];
+
     
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge

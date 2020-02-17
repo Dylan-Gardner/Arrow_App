@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
-import {View,Dimensions, StyleSheet, Image, Text } from 'react-native';
-
+import { 
+    View,
+    Text,
+    StyleSheet,
+    Dimensions,
+    StatusBar
+} from 'react-native';
+import MapView ,{PROVIDER_GOOGLE}from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
 import { connect } from 'react-redux';
 import RNLocation from 'react-native-location';
 
 
 import {currUpdate, destUpdate, viewUpdate} from './redux/actions/mapActions';
 import DirectionBar from './DirectionBar';
-
-import MapboxGL from "@react-native-mapbox-gl/maps";
-
 
 
 var {height, width} = Dimensions.get('window');
@@ -18,16 +22,19 @@ const BAR_HEIGHT = 60;
 const ASPECT_RATIO = width / (height - BAR_HEIGHT);
 const LATITUDE_DELTA = 0.0622
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const timeout = 4000;
+const GOOGLE_MAPS_APIKEY = 'AIzaSyBYBKU8sSjEzxGu7IqJfUYWxh2DEPNCX-w';
+let animationTimeout;
+
 
 
 class Map extends Component {
+
     constructor(props){
         super(props);
     }
 
     componentDidMount() {
-        MapboxGL.setAccessToken("pk.eyJ1IjoiZHlsYW5nYXJkbmVyOTgiLCJhIjoiY2s2cHBkcjJ2MWlqaTNtczhzOHRmYmFqOSJ9.GyoVm5F5fYPsURVkpLeOdw");
-        //MapboxGL.setConneced(true);
       RNLocation.configure({
         distanceFilter: 5.0,
         interval: 5000, // Milliseconds
@@ -67,38 +74,71 @@ class Map extends Component {
             })
           }
         })
+    }
+    
+    componentWillUnmount() {
+      if (animationTimeout) {
+        clearTimeout(animationTimeout);
+      }
+    }
 
-        MapboxGL.locationManager.start();
+    focusMap(markers) {
+      console.log(`Markers received to populate map: ${markers}`);
+      this.map.fitToSuppliedMarkers(markers, {edgePadding: 
+        {
+          top: 150,
+          bottom: 150,
+          left: 150,
+          right: 150
+        },
+        animated: true});
     }
 
     newDestination = () => {
-        /*animationTimeout = setTimeout(() => {
-          this.focusMap(['Location', 'Destination'],true);
-        }, timeout);*/
-      }
+      animationTimeout = setTimeout(() => {
+        this.focusMap(['Location', 'Destination'],true);
+      }, timeout);
+    }
 
-      componentWillUnmount(){
-        MapboxGL.locationManager.dispose();
-      }
+    regionChange(region){
+      this.props.viewUpdate(region.latitude, region.longitude, region.latitudeDelta, region.longitudeDelta)
+    }
 
+    
     render() {
         return (
-            <View>
-                <DirectionBar destCallback={this.newDestination}/>
-                <MapboxGL.MapView style={styles.map}>
-                    <MapboxGL.UserLocation visible={true}/>
-                    {this.props.destination.longitude!=null &&
-                        <MapboxGL.PointAnnotation
-                        id="asd"
-                        
-                        coordinate={[this.props.destination.latitude, this.props.destination.longitude]}>
-                            <Text>
-                                Yo
-                            </Text>
-                            
-                        </MapboxGL.PointAnnotation>
-                    }
-                </MapboxGL.MapView>
+            <View style={styles.container}>
+              <StatusBar hidden={true} />
+              <DirectionBar destCallback={this.newDestination}/>
+              <MapView
+                  ref={map => {
+                    this.map = map;
+                  }}
+                  provider={PROVIDER_GOOGLE}
+                  style={styles.map}
+                  onRegionChange={(region)=>this.regionChange(region)}
+                  initialRegion={this.props.view}
+                  showsUserLocation={true}
+              >
+                {!!this.props.current.latitude && !!this.props.current.longitude && <MapView.Marker 
+                  coordinate={{"latitude":this.props.current.latitude,"longitude":this.props.current.longitude}}
+                  opacity={0}
+                  identifier={'Location'}
+                />}
+
+                {!!this.props.destination.latitude && !!this.props.destination.longitude && <MapView.Marker 
+                  coordinate={{"latitude":this.props.destination.latitude,"longitude":this.props.destination.longitude}}
+                  identifier={'Destination'}
+                />}
+
+                
+                {!!this.props.destination.latitude && !!this.props.destination.longitude && this.props.current.latitude && this.props.current.longitude && <MapViewDirections
+                  origin={this.props.current}
+                  destination={this.props.destination}
+                  apikey={GOOGLE_MAPS_APIKEY}
+                  strokeWidth={2}
+                />}
+              </MapView>
             </View>
         );
     }
