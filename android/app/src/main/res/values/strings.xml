@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Bike_App</string>
+    <string name="mapbox_access_token">pk.eyJ1IjoiZHlsYW5nYXJkbmVyOTgiLCJhIjoiY2s2cHBkcjJ2MWlqaTNtczhzOHRmYmFqOSJ9.GyoVm5F5fYPsURVkpLeOdw</string>
 </resources>

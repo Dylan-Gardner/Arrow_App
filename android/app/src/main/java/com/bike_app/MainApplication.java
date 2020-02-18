@@ -2,6 +2,8 @@ package com.bike_app;
 
 import android.app.Application;
 import android.content.Context;
+
+import com.bike_app.Mapbox.MapboxNavigationViewPackage;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -26,6 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
             packages.add(new SpotifyInfoPackager());
+            packages.add(new MapboxNavigationViewPackage());
             //packages.add(new RCTMGLPackage());
           return packages;
         }

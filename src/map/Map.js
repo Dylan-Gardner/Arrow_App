@@ -21,6 +21,7 @@ import {lineString as makeLineString} from '@turf/helpers';
 
 var {height, width} = Dimensions.get('window');
 import env from '../../env.json';
+import NavigationUI from './NavigationUI';
 
 const BAR_HEIGHT = 60;
 
@@ -30,7 +31,9 @@ class Map extends Component {
     this.state = {
       featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
       route: null,
+      navigation:false
     };
+
   }
 
   componentDidMount() {
@@ -110,7 +113,7 @@ class Map extends Component {
     };
 
     const res = await directionsClient.getDirections(reqOptions).send();
-
+    console.log(res.body)
     this.setState({
       route: makeLineString(res.body.routes[0].geometry.coordinates),
     });
@@ -137,43 +140,64 @@ class Map extends Component {
         <MapboxGL.LineLayer
           id="routeFill"
           style={layerStyles.route}
-          //belowLayerID="originInnerCircle"
         />
       </MapboxGL.ShapeSource>
     );
   }
 
+  launchNavigation = () =>{
+    this.setState({navigation: true})
+  }
+
+  renderView(){
+    if(this.state.navigation){
+      return(
+        <NavigationUI/>
+      )
+    }
+    else{
+      return(
+        <View>
+          <DirectionBar
+            destCallback={this.newDestination}
+            clearCallback={this.clearDestination}
+            launchNavigation={this.launchNavigation}
+          />
+          {!!this.props.view.latitude && (
+            <MapboxGL.MapView style={styles.map} onPress={this.onPress}>
+              <MapboxGL.UserLocation visible={true} />
+              <MapboxGL.Camera
+                zoomLevel={12}
+                centerCoordinate={[
+                  this.props.view.longitude,
+                  this.props.view.latitude,
+                ]}
+              />
+              <MapboxGL.ShapeSource
+                id="symbolLocationSource"
+                hitbox={{width: 20, height: 20}}
+                shape={this.state.featureCollection}>
+                <MapboxGL.SymbolLayer
+                  id="symbolLocationSymbols"
+                  minZoomLevel={1}
+                  style={style.icon}
+                />
+              </MapboxGL.ShapeSource>
+              {this.renderRoute()}
+            </MapboxGL.MapView>
+          )}
+        </View>
+      )
+    }
+  }
+
   render() {
     return (
+
+      
       <View style={styles.container}>
         <StatusBar hidden={true} />
-        <DirectionBar
-          destCallback={this.newDestination}
-          clearCallback={this.clearDestination}
-        />
-        {!!this.props.view.latitude && (
-          <MapboxGL.MapView style={styles.map} onPress={this.onPress}>
-            <MapboxGL.UserLocation visible={true} />
-            <MapboxGL.Camera
-              zoomLevel={12}
-              centerCoordinate={[
-                this.props.view.longitude,
-                this.props.view.latitude,
-              ]}
-            />
-            <MapboxGL.ShapeSource
-              id="symbolLocationSource"
-              hitbox={{width: 20, height: 20}}
-              shape={this.state.featureCollection}>
-              <MapboxGL.SymbolLayer
-                id="symbolLocationSymbols"
-                minZoomLevel={1}
-                style={style.icon}
-              />
-            </MapboxGL.ShapeSource>
-            {this.renderRoute()}
-          </MapboxGL.MapView>
-        )}
+        {this.renderView()}
       </View>
     );
   }

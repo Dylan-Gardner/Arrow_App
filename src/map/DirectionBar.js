@@ -11,9 +11,13 @@ import RNGooglePlaces from 'react-native-google-places';
 import {connect} from 'react-redux';
 import {destUpdate} from '../redux/actions/mapActions';
 
+
 var {height, width} = Dimensions.get('window');
 
 class DirectionBar extends Component {
+  constructor(props){
+    super(props)
+  }
   openSearchModal() {
     RNGooglePlaces.openAutocompleteModal()
       .then(place => {
@@ -37,6 +41,13 @@ class DirectionBar extends Component {
   render() {
     return (
       <View style={styles.bar}>
+        {!!this.props.destination.address &&
+          <TouchableOpacity onPress={() => this.props.launchNavigation()}>
+            <Text>
+              Go
+            </Text>
+          </TouchableOpacity>
+        }
         <TouchableOpacity
           style={styles.input}
           onPress={() => this.openSearchModal()}>
@@ -65,7 +76,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    width: width - 70,
+    width: width - 100,
     borderRadius: 8,
     borderColor: 'black',
     backgroundColor: 'white',
