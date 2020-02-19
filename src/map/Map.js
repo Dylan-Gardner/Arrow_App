@@ -1,12 +1,5 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Dimensions,
-  StyleSheet,
-  Image,
-  Text,
-  StatusBar,
-} from 'react-native';
+import {View, Dimensions, StyleSheet, StatusBar} from 'react-native';
 
 import {connect} from 'react-redux';
 import RNLocation from 'react-native-location';
@@ -31,13 +24,16 @@ class Map extends Component {
     this.state = {
       featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
       route: null,
-      navigation:false
+      navigation: false,
+      initalCords: {
+        lat: null,
+        long: null,
+      },
     };
-
   }
 
   componentDidMount() {
-    MapboxGL.setAccessToken(env['accessToken']);
+    MapboxGL.setAccessToken(env.accessToken);
     RNLocation.configure({
       distanceFilter: 5.0,
       interval: 5000, // Milliseconds
@@ -54,23 +50,23 @@ class Map extends Component {
       if (granted) {
         this.locationSubscription = RNLocation.subscribeToLocationUpdates(
           locations => {
-            console.log(locations[0]);
             var lat = parseFloat(locations[0].latitude);
             var long = parseFloat(locations[0].longitude);
-            this.props.currUpdate(lat, long);
+            if (!this.state.navigation) {
+              this.props.currUpdate(lat, long);
+            }
+            if (this.state.initalCords.lat == null) {
+              this.setState({
+                initalCords: {
+                  lat: lat,
+                  long: long,
+                },
+              });
+            }
           },
         );
-        RNLocation.getLatestLocation({timeout: 60000}).then(location => {
-          this.props.viewUpdate(
-            location.latitude,
-            location.longitude,
-            0.0922,
-            0.0421,
-          );
-        });
       }
     });
-
     MapboxGL.locationManager.start();
   }
 
@@ -82,7 +78,7 @@ class Map extends Component {
       ],
       type: 'Point',
     });
-    feature.id = `marker`;
+    feature.id = 'marker';
     this.setState({
       featureCollection: MapboxGL.geoUtils.addToFeatureCollection(
         this.state.featureCollection,
@@ -113,7 +109,7 @@ class Map extends Component {
     };
 
     const res = await directionsClient.getDirections(reqOptions).send();
-    console.log(res.body)
+    console.log(res.body);
     this.setState({
       route: makeLineString(res.body.routes[0].geometry.coordinates),
     });
@@ -137,40 +133,34 @@ class Map extends Component {
 
     return (
       <MapboxGL.ShapeSource id="routeSource" shape={this.state.route}>
-        <MapboxGL.LineLayer
-          id="routeFill"
-          style={layerStyles.route}
-        />
+        <MapboxGL.LineLayer id="routeFill" style={layerStyles.route} />
       </MapboxGL.ShapeSource>
     );
   }
 
-  launchNavigation = () =>{
-    this.setState({navigation: true})
-  }
+  launchNavigation = () => {
+    this.setState({navigation: true});
+  };
 
-  renderView(){
-    if(this.state.navigation){
-      return(
-        <NavigationUI/>
-      )
-    }
-    else{
-      return(
+  renderView() {
+    if (this.state.navigation) {
+      return <NavigationUI />;
+    } else {
+      return (
         <View>
           <DirectionBar
             destCallback={this.newDestination}
             clearCallback={this.clearDestination}
             launchNavigation={this.launchNavigation}
           />
-          {!!this.props.view.latitude && (
+          {!!this.state.initalCords.lat && (
             <MapboxGL.MapView style={styles.map} onPress={this.onPress}>
               <MapboxGL.UserLocation visible={true} />
               <MapboxGL.Camera
                 zoomLevel={12}
                 centerCoordinate={[
-                  this.props.view.longitude,
-                  this.props.view.latitude,
+                  this.state.initalCords.long,
+                  this.state.initalCords.lat,
                 ]}
               />
               <MapboxGL.ShapeSource
@@ -187,14 +177,12 @@ class Map extends Component {
             </MapboxGL.MapView>
           )}
         </View>
-      )
+      );
     }
   }
 
   render() {
     return (
-
-      
       <View style={styles.container}>
         <StatusBar hidden={true} />
         {this.renderView()}

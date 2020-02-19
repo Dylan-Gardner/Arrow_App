@@ -8,6 +8,7 @@ import android.util.Log;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -20,6 +21,8 @@ import com.bike_app.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.mapbox.api.directions.v5.DirectionsCriteria.PROFILE_CYCLING;
 
 public class MapboxNavigationManager extends ReactContextBaseJavaModule implements Callback<DirectionsResponse>{
 
@@ -53,20 +56,7 @@ public class MapboxNavigationManager extends ReactContextBaseJavaModule implemen
 
         NavigationRoute.builder(context)
                 .accessToken(context.getString(R.string.mapbox_access_token))
-                .origin(origin)
-                .destination(destination)
-                .build()
-                .getRoute(this);
-    }
-
-    @ReactMethod
-    public void takeMeToWH() {
-
-        Point origin = Point.fromLngLat(-77.03613, 38.90992);
-        Point destination = Point.fromLngLat(-77.0365, 38.8977);
-
-        NavigationRoute.builder(context)
-                .accessToken(context.getString(R.string.mapbox_access_token))
+                .profile(PROFILE_CYCLING)
                 .origin(origin)
                 .destination(destination)
                 .build()

@@ -14,11 +14,13 @@ import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.common.UIManagerType;
+import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
+import com.mapbox.services.android.navigation.ui.v5.listeners.NavigationListener;
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.bike_app.R;
@@ -87,6 +89,7 @@ public class MapboxNavigationViewManager extends SimpleViewManager<FrameLayout> 
 
         NavigationRoute.builder(context)
                 .accessToken(context.getString(R.string.mapbox_access_token))
+                .profile(DirectionsCriteria.PROFILE_CYCLING)
                 .origin(origin)
                 .destination(destination)
                 .build()
@@ -99,7 +102,7 @@ public class MapboxNavigationViewManager extends SimpleViewManager<FrameLayout> 
             @Override
             public void run() {
                 NavigationLauncherOptions options = NavigationLauncherOptions.builder()
-                        .directionsRoute(response.body().routes().get(0))
+                        .directionsRoute(response.body().routes().get(0)).shouldSimulateRoute(true)
                         .build();
                 NavigationLauncher.startNavigation( context.getCurrentActivity(), options);
             }

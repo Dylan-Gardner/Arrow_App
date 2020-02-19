@@ -1,24 +1,23 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Platform,
   StyleSheet,
   Text,
   View,
   Button,
-  PermissionsAndroid
-} from "react-native";
-import NavigationView from "../../NavigationView";
-import { NativeModules } from "react-native";
+  PermissionsAndroid,
+} from 'react-native';
+import NavigationView from '../../NavigationView';
+import {NativeModules} from 'react-native';
 import {connect} from 'react-redux';
-
 
 class NavigationUI extends Component {
   state = {
-    granted: Platform.OS === "ios",
+    granted: Platform.OS === 'ios',
     fromLat: 34.028092,
     fromLong: -118.484868,
     toLat: 34.019444,
-    toLong: -118.409259
+    toLong: -118.409259,
   };
 
   componentDidMount() {
@@ -32,14 +31,14 @@ class NavigationUI extends Component {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
-          title: "ACCESS_FINE_LOCATION",
-          message: "Mapbox navigation needs ACCESS_FINE_LOCATION"
-        }
+          title: 'ACCESS_FINE_LOCATION',
+          message: 'Mapbox navigation needs ACCESS_FINE_LOCATION',
+        },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        this.setState({ granted: true });
+        this.setState({granted: true});
       } else {
-        console.log("ACCESS_FINE_LOCATION permission denied");
+        console.log('ACCESS_FINE_LOCATION permission denied');
       }
     } catch (err) {
       console.warn(err);
@@ -47,43 +46,22 @@ class NavigationUI extends Component {
   }
 
   render() {
-    const { granted, fromLat, fromLong, toLat, toLong } = this.state;
+    const {granted, fromLat, fromLong, toLat, toLong} = this.state;
     return (
       <View style={styles.container}>
-        <View style={styles.subcontainer}>
-          <Text style={styles.welcome}>
-            Welcome to Mapbox Navigation for React Native
-          </Text>
-        </View>
         {granted && (
           <NavigationView
             style={styles.navigation}
             destination={{
               lat: this.props.destination.latitude,
-              long: this.props.destination.longitude
+              long: this.props.destination.longitude,
             }}
             origin={{
               lat: this.props.current.latitude,
-              long: this.props.current.longitude
+              long: this.props.current.longitude,
             }}
           />
         )}
-        <View style={styles.subcontainer}>
-          <Text style={styles.welcome}>Another View !</Text>
-          {Platform.OS === "android" && (
-            <Button
-              title={"Start Navigation - NativeModule"}
-              onPress={() => {
-                NativeModules.MapboxNavigation.navigate(
-                    this.props.destination.latitude,
-                    this.props.destination.longitude,
-                    this.props.current.latitude,
-                    this.props.current.longitude
-                );
-              }}
-            />
-          )}
-        </View>
       </View>
     );
   }
@@ -92,35 +70,33 @@ class NavigationUI extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "stretch",
-    backgroundColor: "whitesmoke"
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    backgroundColor: 'whitesmoke',
   },
   subcontainer: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "whitesmoke"
+    justifyContent: 'center',
+    backgroundColor: 'whitesmoke',
   },
   welcome: {
     fontSize: 20,
-    textAlign: "center",
-    margin: 10
+    textAlign: 'center',
+    margin: 10,
   },
   navigation: {
-    backgroundColor: "gainsboro",
-    flex: 1
-  }
+    backgroundColor: 'gainsboro',
+    flex: 1,
+  },
 });
 
 const mapStateToProps = state => {
-    // Redux Store --> Component
-    return {
-      current: state.mapReducer.current,
-      destination: state.mapReducer.destination,
-      view: state.mapReducer.view,
-    };
+  // Redux Store --> Component
+  return {
+    current: state.mapReducer.current,
+    destination: state.mapReducer.destination,
+    view: state.mapReducer.view,
   };
+};
 
-  export default connect(
-    mapStateToProps
-  )(NavigationUI);
+export default connect(mapStateToProps)(NavigationUI);
