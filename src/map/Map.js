@@ -12,11 +12,15 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import {directionsClient} from '../../MapboxClient';
 import {lineString as makeLineString} from '@turf/helpers';
 
+import {NativeModules, NativeEventEmitter} from 'react-native';
+
 var {height, width} = Dimensions.get('window');
 import env from '../../env.json';
 import NavigationUI from './NavigationUI';
 
 const BAR_HEIGHT = 60;
+const { ModuleWithEmitter } = NativeModules;
+
 
 class Map extends Component {
   constructor(props) {
@@ -68,6 +72,11 @@ class Map extends Component {
       }
     });
     MapboxGL.locationManager.start();
+
+    const eventEmitter = new NativeEventEmitter(ModuleWithEmitter);
+    eventEmitter.addListener('NavCancel', (event) => {
+        this.setState({navigation: false});
+    });
   }
 
   newDestination = () => {
