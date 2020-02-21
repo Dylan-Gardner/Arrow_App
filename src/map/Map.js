@@ -77,6 +77,12 @@ class Map extends Component {
     eventEmitter.addListener('NavCancel', (event) => {
         this.setState({navigation: false});
     });
+    eventEmitter.addListener('Location', (event) => {
+      console.log(event)
+    });
+    eventEmitter.addListener('Progress', (event) => {
+      console.log(event);
+    })
   }
 
   newDestination = () => {

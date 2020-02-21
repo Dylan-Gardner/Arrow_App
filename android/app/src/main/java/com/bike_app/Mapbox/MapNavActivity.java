@@ -1,19 +1,15 @@
 package com.bike_app.Mapbox;
 
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.bike_app.Mapbox.NavLauncher;
 import com.bike_app.R;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
@@ -25,9 +21,11 @@ import com.mapbox.services.android.navigation.ui.v5.OnNavigationReadyCallback;
 import com.mapbox.services.android.navigation.ui.v5.listeners.NavigationListener;
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigationOptions;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationConstants;
+import com.mapbox.services.android.navigation.v5.routeprogress.ProgressChangeListener;
+import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress;
 
 public class MapNavActivity extends ReactActivity implements OnNavigationReadyCallback,
-        NavigationListener {
+        NavigationListener, ProgressChangeListener {
 
     private NavigationView navigationView;
 
@@ -56,6 +54,15 @@ public class MapNavActivity extends ReactActivity implements OnNavigationReadyCa
         } catch (Exception e){
             Log.e("ReactNative", "Caught Exception: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void onProgressChange(Location location, RouteProgress routeProgress){
+        WritableMap params = Arguments.createMap();
+        params.putString("location", location.toString());
+        params.putDouble("Travelled",routeProgress.distanceTraveled());
+        params.putDouble("TimeRemaining", routeProgress.durationRemaining());
+        sendEvent("Location", params);
     }
 
     @Override
@@ -117,7 +124,7 @@ public class MapNavActivity extends ReactActivity implements OnNavigationReadyCa
     @Override
     public void onNavigationReady(boolean isRunning) {
         NavigationViewOptions.Builder options = NavigationViewOptions.builder();
-        options.navigationListener(this);
+        options.navigationListener(this).progressChangeListener(this);
         extractRoute(options);
         extractConfiguration(options);
         options.navigationOptions(MapboxNavigationOptions.builder().build());
