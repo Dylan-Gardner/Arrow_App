@@ -223,23 +223,11 @@ const style = {
   },
 };
 const layerStyles = {
-  origin: {
-    circleRadius: 5,
-    circleColor: 'white',
-  },
-  destination: {
-    circleRadius: 5,
-    circleColor: 'white',
-  },
   route: {
     lineColor: 'black',
     lineCap: MapboxGL.LineJoin.Round,
     lineWidth: 3,
-    lineOpacity: 0.84,
-  },
-  progress: {
-    lineColor: '#314ccd',
-    lineWidth: 3,
+    lineOpacity: 0.74,
   },
 };
 
@@ -254,13 +242,10 @@ const mapStateToProps = state => {
 };
 // Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
 const mapDispatchToProps = dispatch => {
-  // Action
   return {
-    // Increase Counter
     currUpdate: (latitude, longitude) => {
       dispatch(currUpdate(latitude, longitude));
     },
-    // Decrease Counter
     destUpdate: (latitude, longitude) => {
       dispatch(destUpdate(latitude, longitude));
     },

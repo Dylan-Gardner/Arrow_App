@@ -21,11 +21,14 @@ class DirectionBar extends Component {
   openSearchModal() {
     RNGooglePlaces.openAutocompleteModal()
       .then(place => {
+        var pieces = place.address.split(",");
+        pieces.length = pieces.length-1;
+        var address = pieces.join(",");
         //console.log(place);
         this.props.destUpdate(
           place.location.latitude,
           place.location.longitude,
-          place.address,
+          address,
         );
         this.props.destCallback();
         // place represents user's selection from the
@@ -42,7 +45,7 @@ class DirectionBar extends Component {
     return (
       <View style={styles.bar}>
         {!!this.props.destination.address &&
-          <TouchableOpacity onPress={() => this.props.launchNavigation()}>
+          <TouchableOpacity style={styles.buttons} onPress={() => this.props.launchNavigation()}>
             <Text>
               Go
             </Text>
@@ -56,7 +59,7 @@ class DirectionBar extends Component {
             <Text> {this.props.destination.address} </Text>
           )}
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => this.clearAddress()}>
+        <TouchableOpacity style={styles.buttons} onPress={() => this.clearAddress()}>
           <Text>Clear</Text>
         </TouchableOpacity>
       </View>
@@ -70,20 +73,33 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 60,
     width: width,
+    justifyContent: 'flex-end',
     backgroundColor: '#4285F4',
-    justifyContent: 'center',
     alignItems: 'center',
+    paddingRight: 10,
   },
   input: {
     height: 40,
-    width: width - 100,
+    width: width - 140,
     borderRadius: 8,
     borderColor: 'black',
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
+    marginRight: 10,
+    marginLeft: 10,
   },
+  buttons: {
+    height: 40,
+    width: 50,
+    borderRadius: 8,
+    borderColor: 'black',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+  }
 });
 
 const mapStateToProps = state => {
