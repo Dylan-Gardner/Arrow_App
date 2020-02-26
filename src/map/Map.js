@@ -19,8 +19,7 @@ import env from '../../env.json';
 import NavigationUI from './NavigationUI';
 
 const BAR_HEIGHT = 60;
-const { ModuleWithEmitter } = NativeModules;
-
+const {ModuleWithEmitter} = NativeModules;
 
 class Map extends Component {
   constructor(props) {
@@ -74,15 +73,12 @@ class Map extends Component {
     MapboxGL.locationManager.start();
 
     const eventEmitter = new NativeEventEmitter(ModuleWithEmitter);
-    eventEmitter.addListener('NavCancel', (event) => {
-        this.setState({navigation: false});
+    eventEmitter.addListener('NavCancel', event => {
+      this.setState({navigation: false});
     });
-    eventEmitter.addListener('Location', (event) => {
-      console.log(event)
-    });
-    eventEmitter.addListener('Progress', (event) => {
+    eventEmitter.addListener('Navigation', event => {
       console.log(event);
-    })
+    });
   }
 
   newDestination = () => {

@@ -36,10 +36,6 @@ public class MapNavActivity extends ReactActivity implements OnNavigationReadyCa
         setContentView(R.layout.activity_navigation);
         navigationView = findViewById(R.id.navigationView);
         navigationView.onCreate(savedInstanceState);
-
-        WritableMap map = Arguments.createMap();
-        map.putString("messageString", "CustomMessage");
-
         initialize();
     }
 
@@ -58,11 +54,20 @@ public class MapNavActivity extends ReactActivity implements OnNavigationReadyCa
 
     @Override
     public void onProgressChange(Location location, RouteProgress routeProgress){
+        //ETA
+        //MIN REMAINING
+        //TOTAL DISTANCE REMAINING
+        //Current Road
+        //Next Manuever
+        //Next manuever Distance
+        //seconday manuever if there is any
         WritableMap params = Arguments.createMap();
-        params.putString("location", location.toString());
-        params.putDouble("Travelled",routeProgress.distanceTraveled());
-        params.putDouble("TimeRemaining", routeProgress.durationRemaining());
-        sendEvent("Location", params);
+        params.putString("nextStepInstruction", routeProgress.currentLegProgress().upComingStep().maneuver().instruction());
+        params.putDouble("nextStepDistance", routeProgress.currentLegProgress().currentStepProgress().distanceRemaining() * 0.00062137119);
+        params.putString("currStepName", routeProgress.currentLegProgress().currentStep().name());
+        params.putDouble("distanceRemaining", routeProgress.distanceRemaining() * 0.00062137119);
+        params.putDouble("TimeRemaining", routeProgress.durationRemaining()/60);
+        sendEvent("Navigation", params);
     }
 
     @Override
