@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {
-  TextInput,
   View,
   Text,
   StyleSheet,
@@ -10,8 +9,7 @@ import {
 import RNGooglePlaces from 'react-native-google-places';
 import {connect} from 'react-redux';
 import {destUpdate} from '../redux/actions/mapActions';
-import NavigationBubble from './NavigationBubble'
-import DestinationBubble from './DestinationBubble';
+import NavigationBubble from './bubbles/NavigationBubble'
 
 
 var {height, width} = Dimensions.get('window');
@@ -21,12 +19,14 @@ class DirectionBar extends Component {
     super(props)
   }
   openSearchModal() {
-    RNGooglePlaces.openAutocompleteModal()
+    RNGooglePlaces.openAutocompleteModal({initialQuery: this.props.destination.address})
       .then(place => {
         var pieces = place.address.split(",");
         pieces.length = pieces.length-1;
         var address = pieces.join(",");
-        //console.log(place);
+        address = address.split(" ");
+        address.length = address.length - 1;
+        address = address.join(" ");
         this.props.destUpdate(
           place.location.latitude,
           place.location.longitude,
@@ -46,13 +46,6 @@ class DirectionBar extends Component {
   render() {
     return (
       <NavigationBubble style={styles.bubble}>
-        {!!this.props.destination.address &&
-          <TouchableOpacity style={styles.buttons} onPress={() => this.props.launchNavigation()}>
-            <Text>
-              Go
-            </Text>
-          </TouchableOpacity>
-        }
         <View style={styles.bar}>
           <TouchableOpacity
             style={styles.input}
@@ -75,7 +68,6 @@ const styles = StyleSheet.create({
   bubble:{
     justifyContent: 'center',
     flexDirection: 'row',
-    height: 60,
     backgroundColor: '#4285F4'
   },
   bar: {
@@ -83,14 +75,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    backgroundColor:'white',
     borderRadius: 8,
     borderWidth:1,
   },
   input: {
     height: 40,
-    width: width - 110,
-    backgroundColor: 'white',
-    alignItems: 'center',
+    width: width - 80,
+    alignItems: 'flex-start',
+    paddingLeft: 8,
     justifyContent: 'center',
     borderBottomLeftRadius: 8,
     borderTopLeftRadius: 8
@@ -98,7 +91,6 @@ const styles = StyleSheet.create({
   buttons: {
     height: 40,
     width: 40,
-    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
     borderBottomRightRadius:8,

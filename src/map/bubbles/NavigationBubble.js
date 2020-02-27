@@ -6,18 +6,17 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 10,
     position: 'absolute',
-    bottom: 24,
+    top: 10,
     left: 20,
     right: 20,
-    paddingVertical: 16,
-    minHeight: 50,
+    minHeight: 40,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
   },
 });
 
-class DestinationBubble extends React.PureComponent {
+class NavigationBubble extends React.PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     children: PropTypes.any,
@@ -41,4 +40,4 @@ class DestinationBubble extends React.PureComponent {
   }
 }
 
-export default DestinationBubble;
+export default NavigationBubble;

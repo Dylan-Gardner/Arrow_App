@@ -17,8 +17,8 @@ import {NativeModules, NativeEventEmitter} from 'react-native';
 var {height, width} = Dimensions.get('window');
 import env from '../../env.json';
 import NavigationUI from './NavigationUI';
-import DestinationBubble from './DestinationBubble'
-import NavigationBubble from './NavigationBubble';
+import DestinationBar from './DestinationBar';
+import CenterBubble from './bubbles/CenterBubble';
 
 const BAR_HEIGHT = 50;
 const {ModuleWithEmitter} = NativeModules;
@@ -122,12 +122,11 @@ class Map extends Component {
     };
 
     const res = await directionsClient.getDirections(reqOptions).send();
-    //console.log(res.body);
     var duration = res.body.routes[0].duration/60;
     var distance = res.body.routes[0].distance * 0.000621371;
-    console.log(duration);
-    console.log(distance);
     this.setState({
+      duration: duration.toFixed(0),
+      distance: distance.toFixed(1),
       route: makeLineString(res.body.routes[0].geometry.coordinates),
     });
   }
@@ -166,7 +165,10 @@ class Map extends Component {
       return (
         <View>
           {!!this.state.initalCords.lat && (
-            <MapboxGL.MapView style={styles.map} onPress={this.onPress}>
+            <MapboxGL.MapView 
+              style={styles.map} 
+              onPress={this.onPress}
+              compassViewMargins={{x:20, y:80}}>
               <MapboxGL.UserLocation visible={true} />
               <MapboxGL.Camera
                 zoomLevel={12}
@@ -174,6 +176,7 @@ class Map extends Component {
                   this.state.initalCords.long,
                   this.state.initalCords.lat,
                 ]}
+                
               />
               <MapboxGL.ShapeSource
                 id="symbolLocationSource"
@@ -188,14 +191,21 @@ class Map extends Component {
               {this.renderRoute()}
             </MapboxGL.MapView>
           )}
-          <DestinationBubble>
-            <Text>Hello</Text>
-          </DestinationBubble>
+          { !! this.props.destination.address &&
+          <DestinationBar
+          launchNavigation={this.launchNavigation}
+          distance={this.state.distance}
+          duration={this.state.duration}/>
+          }
           <DirectionBar 
             destCallback={this.newDestination}
             clearCallback={this.clearDestination}
-            launchNavigation={this.launchNavigation}
            />
+           <CenterBubble>
+             <Text>
+               Hi
+             </Text>
+           </CenterBubble>
         </View>
       );
     }

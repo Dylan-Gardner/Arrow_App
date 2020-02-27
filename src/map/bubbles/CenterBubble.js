@@ -4,20 +4,19 @@ import {View, StyleSheet, TouchableOpacity} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 10,
+    borderRadius: 50/2,
     position: 'absolute',
-    top: 5,
-    left: 20,
-    right: 20,
-    paddingVertical: 16,
-    minHeight: 60,
+    bottom: 100,
+    width: 50,
+    height:50,
+    right: 25,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
   },
 });
 
-class NavigationBubble extends React.PureComponent {
+class CenterBubble extends React.PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     children: PropTypes.any,
@@ -41,4 +40,4 @@ class NavigationBubble extends React.PureComponent {
   }
 }
 
-export default NavigationBubble;
+export default CenterBubble;
