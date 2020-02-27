@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Dimensions, StyleSheet, StatusBar} from 'react-native';
+import {View, Dimensions, StyleSheet, StatusBar, Text} from 'react-native';
 
 import {connect} from 'react-redux';
 import RNLocation from 'react-native-location';
@@ -17,8 +17,10 @@ import {NativeModules, NativeEventEmitter} from 'react-native';
 var {height, width} = Dimensions.get('window');
 import env from '../../env.json';
 import NavigationUI from './NavigationUI';
+import DestinationBubble from './DestinationBubble'
+import NavigationBubble from './NavigationBubble';
 
-const BAR_HEIGHT = 60;
+const BAR_HEIGHT = 50;
 const {ModuleWithEmitter} = NativeModules;
 
 class Map extends Component {
@@ -120,7 +122,11 @@ class Map extends Component {
     };
 
     const res = await directionsClient.getDirections(reqOptions).send();
-    console.log(res.body);
+    //console.log(res.body);
+    var duration = res.body.routes[0].duration/60;
+    var distance = res.body.routes[0].distance * 0.000621371;
+    console.log(duration);
+    console.log(distance);
     this.setState({
       route: makeLineString(res.body.routes[0].geometry.coordinates),
     });
@@ -159,11 +165,6 @@ class Map extends Component {
     } else {
       return (
         <View>
-          <DirectionBar
-            destCallback={this.newDestination}
-            clearCallback={this.clearDestination}
-            launchNavigation={this.launchNavigation}
-          />
           {!!this.state.initalCords.lat && (
             <MapboxGL.MapView style={styles.map} onPress={this.onPress}>
               <MapboxGL.UserLocation visible={true} />
@@ -187,6 +188,14 @@ class Map extends Component {
               {this.renderRoute()}
             </MapboxGL.MapView>
           )}
+          <DestinationBubble>
+            <Text>Hello</Text>
+          </DestinationBubble>
+          <DirectionBar 
+            destCallback={this.newDestination}
+            clearCallback={this.clearDestination}
+            launchNavigation={this.launchNavigation}
+           />
         </View>
       );
     }
@@ -210,7 +219,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   map: {
-    height: height - BAR_HEIGHT - 50,
+    height: height - BAR_HEIGHT,
     width: width,
     marginBottom: 0,
   },

@@ -19,22 +19,6 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - Google-Maps-iOS-Utils (2.1.0):
-    - Google-Maps-iOS-Utils/Clustering (= 2.1.0)
-    - Google-Maps-iOS-Utils/Geometry (= 2.1.0)
-    - Google-Maps-iOS-Utils/Heatmap (= 2.1.0)
-    - Google-Maps-iOS-Utils/QuadTree (= 2.1.0)
-    - GoogleMaps
-  - Google-Maps-iOS-Utils/Clustering (2.1.0):
-    - Google-Maps-iOS-Utils/QuadTree
-    - GoogleMaps
-  - Google-Maps-iOS-Utils/Geometry (2.1.0):
-    - GoogleMaps
-  - Google-Maps-iOS-Utils/Heatmap (2.1.0):
-    - Google-Maps-iOS-Utils/QuadTree
-    - GoogleMaps
-  - Google-Maps-iOS-Utils/QuadTree (2.1.0):
-    - GoogleMaps
   - GoogleMaps (3.2.0):
     - GoogleMaps/Maps (= 3.2.0)
   - GoogleMaps/Base (3.2.0)
@@ -42,6 +26,9 @@ PODS:
     - GoogleMaps/Base
   - GooglePlaces (3.2.0):
     - GoogleMaps/Base (= 3.2.0)
+  - Mapbox-iOS-SDK (5.7.0):
+    - MapboxMobileEvents (= 0.10.2)
+  - MapboxMobileEvents (0.10.2)
   - RCTRequired (0.61.5)
   - RCTTypeSafety (0.61.5):
     - FBLazyVector (= 0.61.5)
@@ -209,17 +196,14 @@ PODS:
     - React
     - react-native-ble-plx-swift
   - react-native-ble-plx-swift (1.1.1)
-  - react-native-google-maps (0.26.1):
-    - Google-Maps-iOS-Utils (= 2.1.0)
-    - GoogleMaps (= 3.2.0)
-    - React
   - react-native-google-places (3.1.2):
     - GoogleMaps (~> 3.2.0)
     - GooglePlaces (~> 3.2.0)
     - React
   - react-native-location (2.5.0):
     - React
-  - react-native-maps (0.26.1):
+  - react-native-mapbox-gl (7.2.0):
+    - Mapbox-iOS-SDK (~> 5.6)
     - React
   - react-native-safe-area-context (0.6.4):
     - React
@@ -274,6 +258,8 @@ PODS:
     - React
   - RNSpotifyRemote (0.1.1):
     - React-Core
+  - RNVectorIcons (6.6.0):
+    - React
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -282,8 +268,6 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
-  - Google-Maps-iOS-Utils
-  - GoogleMaps
   - GooglePlaces
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -298,10 +282,9 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-ble-plx (from `../node_modules/react-native-ble-plx`)
   - react-native-ble-plx-swift (from `../node_modules/react-native-ble-plx`)
-  - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-google-places (from `../node_modules/react-native-google-places`)
   - react-native-location (from `../node_modules/react-native-location`)
-  - react-native-maps (from `../node_modules/react-native-maps`)
+  - "react-native-mapbox-gl (from `../node_modules/@react-native-mapbox-gl/maps`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -322,14 +305,16 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSensors (from `../node_modules/react-native-sensors`)
   - RNSpotifyRemote (from `../node_modules/react-native-spotify-remote`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
   trunk:
     - boost-for-react-native
-    - Google-Maps-iOS-Utils
     - GoogleMaps
     - GooglePlaces
+    - Mapbox-iOS-SDK
+    - MapboxMobileEvents
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -364,14 +349,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-ble-plx"
   react-native-ble-plx-swift:
     :path: "../node_modules/react-native-ble-plx"
-  react-native-google-maps:
-    :path: "../node_modules/react-native-maps"
   react-native-google-places:
     :path: "../node_modules/react-native-google-places"
   react-native-location:
     :path: "../node_modules/react-native-location"
-  react-native-maps:
-    :path: "../node_modules/react-native-maps"
+  react-native-mapbox-gl:
+    :path: "../node_modules/@react-native-mapbox-gl/maps"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   React-RCTActionSheet:
@@ -410,6 +393,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-sensors"
   RNSpotifyRemote:
     :path: "../node_modules/react-native-spotify-remote"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -420,9 +405,10 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 118d0d177724c2d67f08a59136eb29ef5943ec75
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
-  Google-Maps-iOS-Utils: c32891ff472eaaa1fca032beedafa1a013af7875
   GoogleMaps: 5046d7edfe381c1a0b20fdaf293915a375c3122b
   GooglePlaces: 41bc2e480816b1234a48f4bec92e1c886f37cfe1
+  Mapbox-iOS-SDK: 1b7cb0e739247d20ef75f5f14aa6ce34e1f0660f
+  MapboxMobileEvents: 2bc0ca2eedb627b73cf403258dce2b2fa98074a6
   RCTRequired: b153add4da6e7dbc44aebf93f3cf4fcae392ddf1
   RCTTypeSafety: 9aa1b91d7f9310fc6eadc3cf95126ffe818af320
   React: b6a59ef847b2b40bb6e0180a97d0ca716969ac78
@@ -434,10 +420,9 @@ SPEC CHECKSUMS:
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-ble-plx: 304c7bee074a05581672c9990f375b3906808718
   react-native-ble-plx-swift: eb64f02b988becb84a60164aba9fab5d6ddb6dc8
-  react-native-google-maps: 2e2e697dab576abd5809d78cd74e775865b62bf7
   react-native-google-places: 1531c5b40622f71b6dacfb476e30be9e08e857b8
   react-native-location: 9c53c0957756f7d70e8fdc76b1c7ed85867c8d0b
-  react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
+  react-native-mapbox-gl: f94bda32d55284b202d72359ed7d5d43f5223c89
   react-native-safe-area-context: 042dfc9d4db17196841df962ba9497f6e7a5bd02
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
@@ -457,8 +442,9 @@ SPEC CHECKSUMS:
   RNScreens: 9d8a2900cd4f967af70dbfed74b64f77fbb6600a
   RNSensors: 60197256ecd4e1e906dcaf6d634793f876eaa63b
   RNSpotifyRemote: c50f398c03d4dea1647389e411c80c1d067a4d6d
+  RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: b5c568c2eac75ef53c59b3f27f3ed921fca0061f
+PODFILE CHECKSUM: 4ff3440eb2a4473f72caf33c044c0943fa1ca667
 
 COCOAPODS: 1.8.4

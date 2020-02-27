@@ -10,6 +10,8 @@ import {
 import RNGooglePlaces from 'react-native-google-places';
 import {connect} from 'react-redux';
 import {destUpdate} from '../redux/actions/mapActions';
+import NavigationBubble from './NavigationBubble'
+import DestinationBubble from './DestinationBubble';
 
 
 var {height, width} = Dimensions.get('window');
@@ -43,7 +45,7 @@ class DirectionBar extends Component {
   }
   render() {
     return (
-      <View style={styles.bar}>
+      <NavigationBubble style={styles.bubble}>
         {!!this.props.destination.address &&
           <TouchableOpacity style={styles.buttons} onPress={() => this.props.launchNavigation()}>
             <Text>
@@ -51,54 +53,56 @@ class DirectionBar extends Component {
             </Text>
           </TouchableOpacity>
         }
-        <TouchableOpacity
-          style={styles.input}
-          onPress={() => this.openSearchModal()}>
-          {this.props.destination.address == null && <Text>Search</Text>}
-          {this.props.destination.address != null && (
-            <Text> {this.props.destination.address} </Text>
-          )}
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttons} onPress={() => this.clearAddress()}>
-          <Text>Clear</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.bar}>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => this.openSearchModal()}>
+            {this.props.destination.address == null && <Text>Search</Text>}
+            {this.props.destination.address != null && (
+              <Text> {this.props.destination.address} </Text>
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttons} onPress={() => this.clearAddress()}>
+            <Text>Clear</Text>
+          </TouchableOpacity>
+        </View>
+      </NavigationBubble>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  bubble:{
+    justifyContent: 'center',
+    flexDirection: 'row',
+    height: 60,
+    backgroundColor: '#4285F4'
+  },
   bar: {
     justifyContent: 'flex-end',
     flexDirection: 'row',
-    height: 60,
-    width: width,
     justifyContent: 'flex-end',
-    backgroundColor: '#4285F4',
     alignItems: 'center',
-    paddingRight: 10,
+    borderRadius: 8,
+    borderWidth:1,
   },
   input: {
     height: 40,
-    width: width - 140,
-    borderRadius: 8,
-    borderColor: 'black',
+    width: width - 110,
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    marginRight: 10,
-    marginLeft: 10,
+    borderBottomLeftRadius: 8,
+    borderTopLeftRadius: 8
   },
   buttons: {
     height: 40,
-    width: 50,
-    borderRadius: 8,
-    borderColor: 'black',
+    width: 40,
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
+    borderBottomRightRadius:8,
+    borderTopRightRadius: 8
   }
 });
 
