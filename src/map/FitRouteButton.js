@@ -12,7 +12,7 @@ class FitRouteButton extends Component {
     return (
       <CenterBubble style={styles.bubble}>
         <TouchableOpacity onPress={this.props.fitRoute}>
-          <Icon name={'near-me'} size={25}/>
+          <Icon name={'near-me'} size={25} />
         </TouchableOpacity>
       </CenterBubble>
     );

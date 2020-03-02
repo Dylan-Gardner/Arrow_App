@@ -35,8 +35,6 @@ class DirectionBar extends Component {
           address,
         );
         this.props.destCallback();
-        // place represents user's selection from the
-        // suggestions and it is a simplified Google Place object.
       })
       .catch(error => console.log(error.message)); // error is a Javascript Error object
   }
@@ -102,16 +100,12 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  // Redux Store --> Component
   return {
     destination: state.mapReducer.destination,
   };
 };
-// Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
 const mapDispatchToProps = dispatch => {
-  // Action
   return {
-    // Decrease Counter
     destUpdate: (latitude, longitude, address) => {
       dispatch(destUpdate(latitude, longitude, address));
     },

@@ -141,14 +141,14 @@ class Map extends Component {
         [this.props.destination.longitude, this.props.destination.latitude],
         [this.props.current.longitude, this.props.current.latitude],
         30,
-        1000,
+        1500,
       );
     } else {
       this.camera.current.fitBounds(
         [this.props.current.longitude, this.props.current.latitude],
         [this.props.destination.longitude, this.props.destination.latitude],
         30,
-        1000,
+        1500,
       );
     }
   };
@@ -167,7 +167,7 @@ class Map extends Component {
         this.props.current.latitude,
       ],
       zoomLevel: 13,
-      animationDuration: 1000,
+      animationDuration: 1500,
     });
   };
 
@@ -205,7 +205,7 @@ class Map extends Component {
               <MapboxGL.UserLocation visible={true} />
               <MapboxGL.Camera
                 ref={this.camera}
-                zoomLevel={13}
+                zoomLevel={14}
                 animationMode={'flyTo'}
                 animationDuration={2000}
                 centerCoordinate={[
