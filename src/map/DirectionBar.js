@@ -9,24 +9,26 @@ import {
 import RNGooglePlaces from 'react-native-google-places';
 import {connect} from 'react-redux';
 import {destUpdate} from '../redux/actions/mapActions';
-import NavigationBubble from './bubbles/NavigationBubble'
-
+import NavigationBubble from './bubbles/NavigationBubble';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 var {height, width} = Dimensions.get('window');
 
 class DirectionBar extends Component {
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
   }
   openSearchModal() {
-    RNGooglePlaces.openAutocompleteModal({initialQuery: this.props.destination.address})
+    RNGooglePlaces.openAutocompleteModal({
+      initialQuery: this.props.destination.address,
+    })
       .then(place => {
-        var pieces = place.address.split(",");
-        pieces.length = pieces.length-1;
-        var address = pieces.join(",");
-        address = address.split(" ");
+        var pieces = place.address.split(',');
+        pieces.length = pieces.length - 1;
+        var address = pieces.join(',');
+        address = address.split(' ');
         address.length = address.length - 1;
-        address = address.join(" ");
+        address = address.join(' ');
         this.props.destUpdate(
           place.location.latitude,
           place.location.longitude,
@@ -55,8 +57,10 @@ class DirectionBar extends Component {
               <Text> {this.props.destination.address} </Text>
             )}
           </TouchableOpacity>
-          <TouchableOpacity style={styles.buttons} onPress={() => this.clearAddress()}>
-            <Text>Clear</Text>
+          <TouchableOpacity
+            style={styles.buttons}
+            onPress={() => this.clearAddress()}>
+            <Icon name={'clear'} size={20} />
           </TouchableOpacity>
         </View>
       </NavigationBubble>
@@ -65,37 +69,36 @@ class DirectionBar extends Component {
 }
 
 const styles = StyleSheet.create({
-  bubble:{
+  bubble: {
     justifyContent: 'center',
     flexDirection: 'row',
-    backgroundColor: '#4285F4'
+    backgroundColor: '#4285F4',
   },
   bar: {
     justifyContent: 'flex-end',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor:'white',
+    backgroundColor: 'white',
     borderRadius: 8,
-    borderWidth:1,
+    borderWidth: 1,
   },
   input: {
     height: 40,
-    width: width - 80,
+    width: width - 85,
     alignItems: 'flex-start',
     paddingLeft: 8,
     justifyContent: 'center',
     borderBottomLeftRadius: 8,
-    borderTopLeftRadius: 8
+    borderTopLeftRadius: 8,
   },
   buttons: {
     height: 40,
-    width: 40,
+    width: 45,
     alignItems: 'center',
     justifyContent: 'center',
-    borderBottomRightRadius:8,
-    borderTopRightRadius: 8
-  }
+    borderBottomRightRadius: 8,
+    borderTopRightRadius: 8,
+  },
 });
 
 const mapStateToProps = state => {

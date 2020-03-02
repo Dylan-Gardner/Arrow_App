@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Dimensions, StyleSheet, StatusBar, Text} from 'react-native';
+import {View, Dimensions, StyleSheet, StatusBar} from 'react-native';
 
 import {connect} from 'react-redux';
 import RNLocation from 'react-native-location';
@@ -18,7 +18,8 @@ var {height, width} = Dimensions.get('window');
 import env from '../../env.json';
 import NavigationUI from './NavigationUI';
 import DestinationBar from './DestinationBar';
-import CenterBubble from './bubbles/CenterBubble';
+import CenterButton from './CenterButton';
+import FitRouteButton from './FitRouteButton';
 
 const BAR_HEIGHT = 50;
 const {ModuleWithEmitter} = NativeModules;
@@ -35,6 +36,7 @@ class Map extends Component {
         long: null,
       },
     };
+    this.camera = React.createRef();
   }
 
   componentDidMount() {
@@ -119,22 +121,53 @@ class Map extends Component {
       ],
       profile: 'cycling',
       geometries: 'geojson',
+      overview: 'full',
     };
 
     const res = await directionsClient.getDirections(reqOptions).send();
-    var duration = res.body.routes[0].duration/60;
+    var duration = res.body.routes[0].duration / 60;
     var distance = res.body.routes[0].distance * 0.000621371;
     this.setState({
       duration: duration.toFixed(0),
       distance: distance.toFixed(1),
       route: makeLineString(res.body.routes[0].geometry.coordinates),
     });
+    this.fitRoute();
   }
+
+  fitRoute = () => {
+    if (this.props.current.longitude < this.props.destination.longitude) {
+      this.camera.current.fitBounds(
+        [this.props.destination.longitude, this.props.destination.latitude],
+        [this.props.current.longitude, this.props.current.latitude],
+        30,
+        1000,
+      );
+    } else {
+      this.camera.current.fitBounds(
+        [this.props.current.longitude, this.props.current.latitude],
+        [this.props.destination.longitude, this.props.destination.latitude],
+        30,
+        1000,
+      );
+    }
+  };
 
   clearDestination = () => {
     this.setState({
       featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
       route: null,
+    });
+  };
+
+  centerMap = () => {
+    this.camera.current.setCamera({
+      centerCoordinate: [
+        this.props.current.longitude,
+        this.props.current.latitude,
+      ],
+      zoomLevel: 13,
+      animationDuration: 1000,
     });
   };
 
@@ -165,18 +198,20 @@ class Map extends Component {
       return (
         <View>
           {!!this.state.initalCords.lat && (
-            <MapboxGL.MapView 
-              style={styles.map} 
+            <MapboxGL.MapView
+              style={styles.map}
               onPress={this.onPress}
-              compassViewMargins={{x:20, y:80}}>
+              compassViewMargins={{x: 20, y: 80}}>
               <MapboxGL.UserLocation visible={true} />
               <MapboxGL.Camera
-                zoomLevel={12}
+                ref={this.camera}
+                zoomLevel={13}
+                animationMode={'flyTo'}
+                animationDuration={2000}
                 centerCoordinate={[
                   this.state.initalCords.long,
                   this.state.initalCords.lat,
                 ]}
-                
               />
               <MapboxGL.ShapeSource
                 id="symbolLocationSource"
@@ -191,21 +226,21 @@ class Map extends Component {
               {this.renderRoute()}
             </MapboxGL.MapView>
           )}
-          { !! this.props.destination.address &&
-          <DestinationBar
-          launchNavigation={this.launchNavigation}
-          distance={this.state.distance}
-          duration={this.state.duration}/>
-          }
-          <DirectionBar 
+          {!!this.props.destination.address && (
+            <DestinationBar
+              launchNavigation={this.launchNavigation}
+              distance={this.state.distance}
+              duration={this.state.duration}
+            />
+          )}
+          {!!this.props.destination.address && (
+            <FitRouteButton fitRoute={this.fitRoute} />
+          )}
+          <DirectionBar
             destCallback={this.newDestination}
             clearCallback={this.clearDestination}
-           />
-           <CenterBubble>
-             <Text>
-               Hi
-             </Text>
-           </CenterBubble>
+          />
+          <CenterButton centerCallback={this.centerMap} />
         </View>
       );
     }

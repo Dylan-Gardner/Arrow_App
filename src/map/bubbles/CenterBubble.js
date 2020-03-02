@@ -4,11 +4,11 @@ import {View, StyleSheet, TouchableOpacity} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 50/2,
+    borderRadius: 45/2,
     position: 'absolute',
-    bottom: 100,
-    width: 50,
-    height:50,
+    bottom: 85,
+    width: 45,
+    height:45,
     right: 25,
     alignItems: 'center',
     justifyContent: 'center',
