@@ -95,7 +95,7 @@ class BluetoothHeader extends Component {
           });
       }
     } else {
-      console.log('Not Connected');
+      //console.log('Not Connected');
     }
   };
 

@@ -1,31 +1,25 @@
 package com.bike_app.Mapbox;
 
-import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
-import com.facebook.react.uimanager.common.UIManagerType;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
-import com.mapbox.services.android.navigation.ui.v5.listeners.NavigationListener;
-import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
+import com.mapbox.services.android.navigation.ui.v5.NavigationView;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.bike_app.R;
 
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,6 +31,7 @@ public class MapboxNavigationViewManager extends SimpleViewManager<FrameLayout> 
 
     private FrameLayout mapBoxView;
     private ReactApplicationContext context;
+    private NavigationView navigationView;
 
     private ReadableMap origin;
     private ReadableMap destination;
@@ -83,7 +78,7 @@ public class MapboxNavigationViewManager extends SimpleViewManager<FrameLayout> 
         if(this.origin != null && this.destination != null) navigate();
     }
 
-    public void navigate() {
+    private void navigate() {
         Point origin = Point.fromLngLat(this.origin.getDouble("long"), this.origin.getDouble("lat"));
         Point destination = Point.fromLngLat(this.destination.getDouble("long"), this.destination.getDouble("lat"));
 
@@ -104,7 +99,7 @@ public class MapboxNavigationViewManager extends SimpleViewManager<FrameLayout> 
                 NavigationLauncherOptions options = NavigationLauncherOptions.builder()
                         .directionsRoute(response.body().routes().get(0)).shouldSimulateRoute(true)
                         .build();
-                NavigationLauncher.startNavigation( context.getCurrentActivity(), options);
+                NavLauncher.startNavigation( context.getCurrentActivity(), options);
             }
         });
     }

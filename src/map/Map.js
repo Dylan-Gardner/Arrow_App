@@ -12,11 +12,17 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import {directionsClient} from '../../MapboxClient';
 import {lineString as makeLineString} from '@turf/helpers';
 
+import {NativeModules, NativeEventEmitter} from 'react-native';
+
 var {height, width} = Dimensions.get('window');
 import env from '../../env.json';
 import NavigationUI from './NavigationUI';
+import DestinationBar from './DestinationBar';
+import CenterButton from './CenterButton';
+import FitRouteButton from './FitRouteButton';
 
-const BAR_HEIGHT = 60;
+const BAR_HEIGHT = 50;
+const {ModuleWithEmitter} = NativeModules;
 
 class Map extends Component {
   constructor(props) {
@@ -30,6 +36,7 @@ class Map extends Component {
         long: null,
       },
     };
+    this.camera = React.createRef();
   }
 
   componentDidMount() {
@@ -68,6 +75,14 @@ class Map extends Component {
       }
     });
     MapboxGL.locationManager.start();
+
+    const eventEmitter = new NativeEventEmitter(ModuleWithEmitter);
+    eventEmitter.addListener('NavCancel', event => {
+      this.setState({navigation: false});
+    });
+    eventEmitter.addListener('Navigation', event => {
+      console.log(event);
+    });
   }
 
   newDestination = () => {
@@ -106,19 +121,53 @@ class Map extends Component {
       ],
       profile: 'cycling',
       geometries: 'geojson',
+      overview: 'full',
     };
 
     const res = await directionsClient.getDirections(reqOptions).send();
-    console.log(res.body);
+    var duration = res.body.routes[0].duration / 60;
+    var distance = res.body.routes[0].distance * 0.000621371;
     this.setState({
+      duration: duration.toFixed(0),
+      distance: distance.toFixed(1),
       route: makeLineString(res.body.routes[0].geometry.coordinates),
     });
+    this.fitRoute();
   }
+
+  fitRoute = () => {
+    if (this.props.current.longitude < this.props.destination.longitude) {
+      this.camera.current.fitBounds(
+        [this.props.destination.longitude, this.props.destination.latitude],
+        [this.props.current.longitude, this.props.current.latitude],
+        30,
+        1500,
+      );
+    } else {
+      this.camera.current.fitBounds(
+        [this.props.current.longitude, this.props.current.latitude],
+        [this.props.destination.longitude, this.props.destination.latitude],
+        30,
+        1500,
+      );
+    }
+  };
 
   clearDestination = () => {
     this.setState({
       featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
       route: null,
+    });
+  };
+
+  centerMap = () => {
+    this.camera.current.setCamera({
+      centerCoordinate: [
+        this.props.current.longitude,
+        this.props.current.latitude,
+      ],
+      zoomLevel: 13,
+      animationDuration: 1500,
     });
   };
 
@@ -148,16 +197,17 @@ class Map extends Component {
     } else {
       return (
         <View>
-          <DirectionBar
-            destCallback={this.newDestination}
-            clearCallback={this.clearDestination}
-            launchNavigation={this.launchNavigation}
-          />
           {!!this.state.initalCords.lat && (
-            <MapboxGL.MapView style={styles.map} onPress={this.onPress}>
+            <MapboxGL.MapView
+              style={styles.map}
+              onPress={this.onPress}
+              compassViewMargins={{x: 20, y: 80}}>
               <MapboxGL.UserLocation visible={true} />
               <MapboxGL.Camera
-                zoomLevel={12}
+                ref={this.camera}
+                zoomLevel={14}
+                animationMode={'flyTo'}
+                animationDuration={2000}
                 centerCoordinate={[
                   this.state.initalCords.long,
                   this.state.initalCords.lat,
@@ -176,6 +226,21 @@ class Map extends Component {
               {this.renderRoute()}
             </MapboxGL.MapView>
           )}
+          {!!this.props.destination.address && (
+            <DestinationBar
+              launchNavigation={this.launchNavigation}
+              distance={this.state.distance}
+              duration={this.state.duration}
+            />
+          )}
+          {!!this.props.destination.address && (
+            <FitRouteButton fitRoute={this.fitRoute} />
+          )}
+          <DirectionBar
+            destCallback={this.newDestination}
+            clearCallback={this.clearDestination}
+          />
+          <CenterButton centerCallback={this.centerMap} />
         </View>
       );
     }
@@ -199,7 +264,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   map: {
-    height: height - BAR_HEIGHT - 50,
+    height: height - BAR_HEIGHT,
     width: width,
     marginBottom: 0,
   },
@@ -212,23 +277,11 @@ const style = {
   },
 };
 const layerStyles = {
-  origin: {
-    circleRadius: 5,
-    circleColor: 'white',
-  },
-  destination: {
-    circleRadius: 5,
-    circleColor: 'white',
-  },
   route: {
     lineColor: 'black',
     lineCap: MapboxGL.LineJoin.Round,
     lineWidth: 3,
-    lineOpacity: 0.84,
-  },
-  progress: {
-    lineColor: '#314ccd',
-    lineWidth: 3,
+    lineOpacity: 0.74,
   },
 };
 
@@ -243,13 +296,10 @@ const mapStateToProps = state => {
 };
 // Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
 const mapDispatchToProps = dispatch => {
-  // Action
   return {
-    // Increase Counter
     currUpdate: (latitude, longitude) => {
       dispatch(currUpdate(latitude, longitude));
     },
-    // Decrease Counter
     destUpdate: (latitude, longitude) => {
       dispatch(destUpdate(latitude, longitude));
     },

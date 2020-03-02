@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {
-  TextInput,
   View,
   Text,
   StyleSheet,
@@ -10,26 +9,32 @@ import {
 import RNGooglePlaces from 'react-native-google-places';
 import {connect} from 'react-redux';
 import {destUpdate} from '../redux/actions/mapActions';
-
+import NavigationBubble from './bubbles/NavigationBubble';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 var {height, width} = Dimensions.get('window');
 
 class DirectionBar extends Component {
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
   }
   openSearchModal() {
-    RNGooglePlaces.openAutocompleteModal()
+    RNGooglePlaces.openAutocompleteModal({
+      initialQuery: this.props.destination.address,
+    })
       .then(place => {
-        //console.log(place);
+        var pieces = place.address.split(',');
+        pieces.length = pieces.length - 1;
+        var address = pieces.join(',');
+        address = address.split(' ');
+        address.length = address.length - 1;
+        address = address.join(' ');
         this.props.destUpdate(
           place.location.latitude,
           place.location.longitude,
-          place.address,
+          address,
         );
         this.props.destCallback();
-        // place represents user's selection from the
-        // suggestions and it is a simplified Google Place object.
       })
       .catch(error => console.log(error.message)); // error is a Javascript Error object
   }
@@ -40,63 +45,67 @@ class DirectionBar extends Component {
   }
   render() {
     return (
-      <View style={styles.bar}>
-        {!!this.props.destination.address &&
-          <TouchableOpacity onPress={() => this.props.launchNavigation()}>
-            <Text>
-              Go
-            </Text>
+      <NavigationBubble style={styles.bubble}>
+        <View style={styles.bar}>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => this.openSearchModal()}>
+            {this.props.destination.address == null && <Text>Search</Text>}
+            {this.props.destination.address != null && (
+              <Text> {this.props.destination.address} </Text>
+            )}
           </TouchableOpacity>
-        }
-        <TouchableOpacity
-          style={styles.input}
-          onPress={() => this.openSearchModal()}>
-          {this.props.destination.address == null && <Text>Search</Text>}
-          {this.props.destination.address != null && (
-            <Text> {this.props.destination.address} </Text>
-          )}
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => this.clearAddress()}>
-          <Text>Clear</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            style={styles.buttons}
+            onPress={() => this.clearAddress()}>
+            <Icon name={'clear'} size={20} />
+          </TouchableOpacity>
+        </View>
+      </NavigationBubble>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  bubble: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#4285F4',
+  },
   bar: {
     justifyContent: 'flex-end',
     flexDirection: 'row',
-    height: 60,
-    width: width,
-    backgroundColor: '#4285F4',
-    justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 8,
+    borderWidth: 1,
   },
   input: {
     height: 40,
-    width: width - 100,
-    borderRadius: 8,
-    borderColor: 'black',
-    backgroundColor: 'white',
+    width: width - 85,
+    alignItems: 'flex-start',
+    paddingLeft: 8,
+    justifyContent: 'center',
+    borderBottomLeftRadius: 8,
+    borderTopLeftRadius: 8,
+  },
+  buttons: {
+    height: 40,
+    width: 45,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
+    borderBottomRightRadius: 8,
+    borderTopRightRadius: 8,
   },
 });
 
 const mapStateToProps = state => {
-  // Redux Store --> Component
   return {
     destination: state.mapReducer.destination,
   };
 };
-// Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
 const mapDispatchToProps = dispatch => {
-  // Action
   return {
-    // Decrease Counter
     destUpdate: (latitude, longitude, address) => {
       dispatch(destUpdate(latitude, longitude, address));
     },

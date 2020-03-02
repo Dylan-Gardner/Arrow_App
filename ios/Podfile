@@ -44,6 +44,8 @@ target 'Bike_App' do
   
   pod 'RNEventEmitter', :path => "../node_modules/react-native-events"
   pod 'RNSpotifyRemote', :path => '../node_modules/react-native-spotify-remote'
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
 
 
   target 'Bike_AppTests' do
