@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 import Map from './map/Map';
-import RideTracking from './RideTracking';
+import RideTracking from './tracking/RideTracking';
 import Settings from './settings/Settings';
 
 import {createAppContainer} from 'react-navigation';
@@ -9,7 +9,7 @@ import {createBottomTabNavigator} from 'react-navigation-tabs';
 
 const TabNavigator = createBottomTabNavigator(
   {
-    Map: Map,
+    Navigation: Map,
     'Ride Tracking': RideTracking,
     Settings: Settings,
   },
