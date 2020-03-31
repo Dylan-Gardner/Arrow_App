@@ -6,6 +6,7 @@ import RNLocation from 'react-native-location';
 import exampleIcon from '../../images/marker.png';
 
 import {currUpdate, destUpdate, viewUpdate} from '../redux/actions/mapActions';
+import {trackingPosUpdate} from '../redux/actions/trackingActions';
 import DirectionBar from './DirectionBar';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -43,7 +44,7 @@ class Map extends Component {
     MapboxGL.setAccessToken(env.accessToken);
     RNLocation.configure({
       distanceFilter: 5.0,
-      interval: 5000, // Milliseconds
+      interval: 2000, // Milliseconds
       fastestInterval: 1000, // Milliseconds
       maxWaitTime: 5000, // Milliseconds
     });
@@ -57,11 +58,13 @@ class Map extends Component {
       if (granted) {
         this.locationSubscription = RNLocation.subscribeToLocationUpdates(
           locations => {
+            console.log(locations);
             var lat = parseFloat(locations[0].latitude);
             var long = parseFloat(locations[0].longitude);
             if (!this.state.navigation) {
               this.props.currUpdate(lat, long);
             }
+            this.props.trackingPosUpdate(locations[0].speed);
             if (this.state.initalCords.lat == null) {
               this.setState({
                 initalCords: {
@@ -308,6 +311,9 @@ const mapDispatchToProps = dispatch => {
       dispatch(
         viewUpdate(latitude, longitude, LATITUDE_DELTA, LONGITUDE_DELTA),
       );
+    },
+    trackingPosUpdate: speed => {
+      dispatch(trackingPosUpdate(speed));
     },
   };
 };
