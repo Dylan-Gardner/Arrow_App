@@ -2,11 +2,15 @@ import React, {Component} from 'react';
 import {View, Dimensions, StyleSheet, StatusBar} from 'react-native';
 
 import {connect} from 'react-redux';
-import RNLocation from 'react-native-location';
 import exampleIcon from '../../images/marker.png';
 
-import {currUpdate, destUpdate, viewUpdate} from '../redux/actions/mapActions';
-import {trackingPosUpdate} from '../redux/actions/trackingActions';
+import {
+  destUpdate,
+  viewUpdate,
+  navStart,
+  navStop,
+} from '../redux/actions/mapActions';
+import {trackingPosUpdate} from '../redux/actions/workoutActions';
 import DirectionBar from './DirectionBar';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -31,57 +35,17 @@ class Map extends Component {
     this.state = {
       featureCollection: MapboxGL.geoUtils.makeFeatureCollection(),
       route: null,
-      navigation: false,
-      initalCords: {
-        lat: null,
-        long: null,
-      },
     };
     this.camera = React.createRef();
   }
 
   componentDidMount() {
     MapboxGL.setAccessToken(env.accessToken);
-    RNLocation.configure({
-      distanceFilter: 5.0,
-      interval: 2000, // Milliseconds
-      fastestInterval: 1000, // Milliseconds
-      maxWaitTime: 5000, // Milliseconds
-    });
-
-    RNLocation.requestPermission({
-      ios: 'whenInUse',
-      android: {
-        detail: 'fine',
-      },
-    }).then(granted => {
-      if (granted) {
-        this.locationSubscription = RNLocation.subscribeToLocationUpdates(
-          locations => {
-            console.log(locations);
-            var lat = parseFloat(locations[0].latitude);
-            var long = parseFloat(locations[0].longitude);
-            if (!this.state.navigation) {
-              this.props.currUpdate(lat, long);
-            }
-            this.props.trackingPosUpdate(locations[0].speed);
-            if (this.state.initalCords.lat == null) {
-              this.setState({
-                initalCords: {
-                  lat: lat,
-                  long: long,
-                },
-              });
-            }
-          },
-        );
-      }
-    });
     MapboxGL.locationManager.start();
 
     const eventEmitter = new NativeEventEmitter(ModuleWithEmitter);
     eventEmitter.addListener('NavCancel', event => {
-      this.setState({navigation: false});
+      this.props.navStop();
     });
     eventEmitter.addListener('Navigation', event => {
       console.log(event);
@@ -191,16 +155,16 @@ class Map extends Component {
   }
 
   launchNavigation = () => {
-    this.setState({navigation: true});
+    this.props.navStart();
   };
 
   renderView() {
-    if (this.state.navigation) {
+    if (this.props.navigation) {
       return <NavigationUI />;
     } else {
       return (
         <View>
-          {!!this.state.initalCords.lat && (
+          {!!this.props.init.longitude && (
             <MapboxGL.MapView
               style={styles.map}
               onPress={this.onPress}
@@ -212,8 +176,8 @@ class Map extends Component {
                 animationMode={'flyTo'}
                 animationDuration={2000}
                 centerCoordinate={[
-                  this.state.initalCords.long,
-                  this.state.initalCords.lat,
+                  this.props.init.longitude,
+                  this.props.init.latitude,
                 ]}
               />
               <MapboxGL.ShapeSource
@@ -295,14 +259,13 @@ const mapStateToProps = state => {
     current: state.mapReducer.current,
     destination: state.mapReducer.destination,
     view: state.mapReducer.view,
+    init: state.initReducer.init,
+    navigation: state.mapReducer.navigation,
   };
 };
 // Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
 const mapDispatchToProps = dispatch => {
   return {
-    currUpdate: (latitude, longitude) => {
-      dispatch(currUpdate(latitude, longitude));
-    },
     destUpdate: (latitude, longitude) => {
       dispatch(destUpdate(latitude, longitude));
     },
@@ -312,8 +275,12 @@ const mapDispatchToProps = dispatch => {
         viewUpdate(latitude, longitude, LATITUDE_DELTA, LONGITUDE_DELTA),
       );
     },
-    trackingPosUpdate: speed => {
-      dispatch(trackingPosUpdate(speed));
+
+    navStart: () => {
+      dispatch(navStart());
+    },
+    navStop: () => {
+      dispatch(navStop());
     },
   };
 };

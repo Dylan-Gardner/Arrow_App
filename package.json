@@ -8,7 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
-  },
+    },
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.9.0",
     "@mapbox/polyline": "^1.1.0",

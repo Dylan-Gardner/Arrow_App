@@ -24,7 +24,6 @@ class NavigationUI extends Component {
     if (!this.state.granted) {
       this.requestFineLocationPermission();
     }
-
   }
 
   async requestFineLocationPermission() {

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
 import {songUpdate} from '../redux/actions/musicActions';
-import NavigationHeader from '../NavigationHeader';
+import Location from '../location/Location.js';
 
 import {
   auth as SpotifyAuth,
@@ -54,7 +54,7 @@ class MusicHeader extends Component {
   }
 
   render() {
-    return <NavigationHeader />;
+    return <Location />;
   }
 }
 

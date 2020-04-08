@@ -23,3 +23,11 @@ export const viewUpdate = (
   LATITUDE_DELTA: LATITUDE_DELTA,
   LONGITUDE_DELTA: LONGITUDE_DELTA,
 });
+
+export const navStart = () => ({
+  type: 'NAV_START',
+});
+
+export const navStop = () => ({
+  type: 'NAV_STOP',
+});

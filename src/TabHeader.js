@@ -25,10 +25,10 @@ const TabNavigator = createBottomTabNavigator(
 
 let Navigation = createAppContainer(TabNavigator);
 
-class NavigationHeader extends Component {
+class TabHeader extends Component {
   render() {
     return <Navigation />;
   }
 }
 
-export default NavigationHeader;
+export default TabHeader;

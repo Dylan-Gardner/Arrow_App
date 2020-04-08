@@ -53,7 +53,7 @@ class BluetoothHeader extends Component {
               console.log(error.message);
               return;
             }
-            console.log(Base64.decode(characteristic.value));
+            //console.log(Base64.decode(characteristic.value));
             //console.log(msgpack.decode(characteristic.value))
           },
         );
@@ -82,7 +82,7 @@ class BluetoothHeader extends Component {
 
   sendMessage = message => {
     if (this.state.device && this.props.deviceConnected) {
-      console.log(message);
+      //console.log(message);
       let objJsonStr = JSON.stringify(message);
       let objJsonB64 = Buffer.from(objJsonStr).toString('base64');
       var sendArray = objJsonB64.match(/.{1,20}/g);

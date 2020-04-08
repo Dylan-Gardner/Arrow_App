@@ -14,6 +14,7 @@ const initialState = {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   },
+  navigation: false,
 };
 
 const mapReducer = (state = initialState, action) => {
@@ -46,6 +47,18 @@ const mapReducer = (state = initialState, action) => {
           latitudeDelta: action.LATITUDE_DELTA,
           longitudeDelta: action.LONGITUDE_DELTA,
         },
+      };
+    }
+    case 'NAV_START': {
+      return {
+        ...state,
+        navigation: true,
+      };
+    }
+    case 'NAV_STOP': {
+      return {
+        ...state,
+        navigation: false,
       };
     }
     default:

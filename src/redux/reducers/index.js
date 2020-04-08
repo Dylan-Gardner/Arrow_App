@@ -4,14 +4,16 @@ import {combineReducers} from 'redux';
 import musicReducer from './musicReducer';
 import mapReducer from './mapReducer';
 import bluetoothReducer from './bluetoothReducer';
-import trackingReducer from './trackingReducer';
+import workoutReducer from './workoutReducer';
+import initReducer from './initReducer';
 
 // Redux: Root Reducer
 const rootReducer = combineReducers({
   musicReducer: musicReducer,
   mapReducer: mapReducer,
   bluetoothReducer: bluetoothReducer,
-  trackingReducer: trackingReducer,
+  workoutReducer: workoutReducer,
+  initReducer: initReducer,
 });
 // Exports
 export default rootReducer;
