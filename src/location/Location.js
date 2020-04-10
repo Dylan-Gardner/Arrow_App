@@ -34,13 +34,14 @@ class Location extends Component {
       if (granted) {
         this.locationSubscription = RNLocation.subscribeToLocationUpdates(
           locations => {
-            if (!locations[0].fromMockProvider) {
+            if (locations[0].fromMockProvider) {
               // TODO: CHANGE FOR PRODUCTION ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
               console.log(locations[0]);
               var lat = parseFloat(locations[0].latitude);
               var long = parseFloat(locations[0].longitude);
               this.props.currUpdate(lat, long);
               if (this.props.workout.started) {
+                const altitude = locations[0].altitude;
                 const start = {
                   latitude: this.props.current.prev_lat,
                   longitude: this.props.current.prev_long,
@@ -52,7 +53,7 @@ class Location extends Component {
                 const distance =
                   this.props.workout.distance +
                     haversine(start, end, {unit: 'mile'}) || 0;
-                this.props.gpsUpdate(locations[0].speed, distance);
+                this.props.gpsUpdate(locations[0].speed, distance, altitude);
               }
               if (this.state.initalCords.lat == null) {
                 this.setState({
@@ -89,8 +90,8 @@ const mapDispatchToProps = dispatch => {
     currUpdate: (latitude, longitude) => {
       dispatch(currUpdate(latitude, longitude));
     },
-    gpsUpdate: (speed, distance) => {
-      dispatch(gpsUpdate(speed, distance));
+    gpsUpdate: (speed, distance, altitude) => {
+      dispatch(gpsUpdate(speed, distance, altitude));
     },
     initUpdate: (latitude, longitude) => {
       dispatch(initUpdate(latitude, longitude));
