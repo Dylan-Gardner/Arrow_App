@@ -1,9 +1,9 @@
-package com.bike_app;
+package com.arrow;
 
 import android.app.Application;
 import android.content.Context;
 
-import com.bike_app.Mapbox.MapboxNavigationViewPackage;
+import com.arrow.Mapbox.MapboxNavigationViewPackage;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;

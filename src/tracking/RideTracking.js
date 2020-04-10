@@ -31,7 +31,7 @@ class RideTracking extends Component {
   };
 
   tick = () => {
-    this.props.incDuration(this.props.workout.duration);
+    this.props.incDuration();
   };
 
   resetWorkout = () => {
@@ -43,7 +43,7 @@ class RideTracking extends Component {
 
   render() {
     var measuredTime = new Date(null);
-    measuredTime.setSeconds(this.props.workout.duration);
+    measuredTime.setSeconds(this.props.workout.duration || 0);
     var Time = measuredTime.toISOString().substr(11, 8);
     if (Time.substr(0, 3) === '00:') {
       Time = Time.substr(3, 5);
@@ -53,9 +53,9 @@ class RideTracking extends Component {
         <View style={styles.row}>
           <View style={styles.box}>
             <Text style={styles.boxText}>
-              {this.props.workout.distance.toFixed(1)}
+              {this.props.workout.distance.toFixed(1) || 0.0}
             </Text>
-            <Text style={styles.boxText}>DISTANCE(MI)</Text>
+            <Text style={styles.boxText}>DISTANCE (MI)</Text>
           </View>
         </View>
         <View style={styles.row}>
@@ -65,20 +65,23 @@ class RideTracking extends Component {
           </View>
           <View style={styles.box}>
             <Text style={styles.boxText}>
-              {this.props.workout.speed.toFixed(1)}
+              {this.props.workout.speed.toFixed(1) || 0.0}
             </Text>
-            <Text style={styles.boxText}>SPEED(MPH)</Text>
+            <Text style={styles.boxText}>SPEED (MPH)</Text>
           </View>
         </View>
         <View style={styles.row}>
           <View style={styles.box}>
             <Text style={styles.boxText}>
-              {this.props.workout.avgSpeed.toFixed(1)}
+              {this.props.workout.avgSpeed.toFixed(1) || 0}
             </Text>
-            <Text style={styles.boxText}>AVG SPEED(MPH)</Text>
+            <Text style={styles.boxText}>AVG SPEED (MPH)</Text>
           </View>
           <View style={styles.box}>
-            <Text style={styles.boxText}>Cal or delta alt</Text>
+            <Text style={styles.boxText}>
+              0
+            </Text>
+            <Text style={styles.boxText}>ALTITUDE CHANGE (FT)</Text>
           </View>
         </View>
         <View style={styles.buttonBox}>
@@ -154,12 +157,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 20,
     color: 'white',
     fontWeight: 'bold',
   },
   boxText: {
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: 'bold',
   },
 });

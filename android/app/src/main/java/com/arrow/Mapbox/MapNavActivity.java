@@ -1,4 +1,4 @@
-package com.bike_app.Mapbox;
+package com.arrow.Mapbox;
 
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import androidx.annotation.Nullable;
-import com.bike_app.R;
+import com.arrow.R;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;

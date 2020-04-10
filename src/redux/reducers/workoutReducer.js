@@ -3,20 +3,21 @@ const initialState = {
   duration: 0,
   speed: 0.0,
   avgSpeed: 0.0,
+  gain: 0.0,
+  loss: 0.0,
+  alts: [],
   altMin: null,
   altMax: null,
-  altDelta: 0,
-  totalSpeed: 0,
   started: false,
 };
 // Reducers (Modifies The State And Returns A New State)
 const workoutReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'speedUpdate': {
+    case 'gpsUpdate': {
       return {
         // State
         ...state,
-        // Redux Store
+        distance: action.distance,
         speed: action.speed,
       };
     }
@@ -36,7 +37,8 @@ const workoutReducer = (state = initialState, action) => {
     case 'incDuration': {
       return {
         ...state,
-        duration: action.duration,
+        avgSpeed: state.distance / (action.duration / 3600),
+        duration: state.duration + 1,
       };
     }
     case 'resetWorkout': {
@@ -45,10 +47,11 @@ const workoutReducer = (state = initialState, action) => {
         duration: 0,
         speed: 0.0,
         avgSpeed: 0.0,
+        gain: 0.0,
+        loss: 0.0,
+        alts: [],
         altMin: null,
         altMax: null,
-        altDelta: 0,
-        totalSpeed: 0,
         started: false,
       };
     }

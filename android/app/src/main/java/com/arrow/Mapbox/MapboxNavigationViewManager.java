@@ -1,4 +1,4 @@
-package com.bike_app.Mapbox;
+package com.arrow.Mapbox;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -18,7 +18,7 @@ import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.ui.v5.NavigationView;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
-import com.bike_app.R;
+import com.arrow.R;
 
 
 import retrofit2.Call;

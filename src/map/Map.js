@@ -10,7 +10,6 @@ import {
   navStart,
   navStop,
 } from '../redux/actions/mapActions';
-import {trackingPosUpdate} from '../redux/actions/workoutActions';
 import DirectionBar from './DirectionBar';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -169,7 +168,7 @@ class Map extends Component {
               style={styles.map}
               onPress={this.onPress}
               compassViewMargins={{x: 20, y: 80}}>
-              <MapboxGL.UserLocation visible={true} />
+              <MapboxGL.UserLocation visible={true} animated={false} />
               <MapboxGL.Camera
                 ref={this.camera}
                 zoomLevel={14}

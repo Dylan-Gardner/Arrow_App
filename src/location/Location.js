@@ -3,8 +3,9 @@ import {connect} from 'react-redux';
 import RNLocation from 'react-native-location';
 import {currUpdate} from '../redux/actions/mapActions';
 import {initUpdate} from '../redux/actions/initActions';
-import {speedUpdate} from '../redux/actions/workoutActions';
+import {gpsUpdate} from '../redux/actions/workoutActions';
 import TabHeader from '../TabHeader.js';
+const haversine = require('haversine');
 
 class Location extends Component {
   constructor(props) {
@@ -33,22 +34,35 @@ class Location extends Component {
       if (granted) {
         this.locationSubscription = RNLocation.subscribeToLocationUpdates(
           locations => {
-            console.log(locations);
-            var lat = parseFloat(locations[0].latitude);
-            var long = parseFloat(locations[0].longitude);
-            //console.log(this.props.navigation, ' ', this.props.init);
-            if (!this.props.navigation) {
+            if (!locations[0].fromMockProvider) {
+              // TODO: CHANGE FOR PRODUCTION ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              console.log(locations[0]);
+              var lat = parseFloat(locations[0].latitude);
+              var long = parseFloat(locations[0].longitude);
               this.props.currUpdate(lat, long);
-            }
-            this.props.speedUpdate(locations[0].speed);
-            if (this.state.initalCords.lat == null) {
-              this.setState({
-                initalCords: {
-                  lat: lat,
-                  long: long,
-                },
-              });
-              this.props.initUpdate(lat, long);
+              if (this.props.workout.started) {
+                const start = {
+                  latitude: this.props.current.prev_lat,
+                  longitude: this.props.current.prev_long,
+                };
+                const end = {
+                  latitude: this.props.current.latitude,
+                  longitude: this.props.current.longitude,
+                };
+                const distance =
+                  this.props.workout.distance +
+                    haversine(start, end, {unit: 'mile'}) || 0;
+                this.props.gpsUpdate(locations[0].speed, distance);
+              }
+              if (this.state.initalCords.lat == null) {
+                this.setState({
+                  initalCords: {
+                    lat: lat,
+                    long: long,
+                  },
+                });
+                this.props.initUpdate(lat, long);
+              }
             }
           },
         );
@@ -75,8 +89,8 @@ const mapDispatchToProps = dispatch => {
     currUpdate: (latitude, longitude) => {
       dispatch(currUpdate(latitude, longitude));
     },
-    speedUpdate: speed => {
-      dispatch(speedUpdate(speed));
+    gpsUpdate: (speed, distance) => {
+      dispatch(gpsUpdate(speed, distance));
     },
     initUpdate: (latitude, longitude) => {
       dispatch(initUpdate(latitude, longitude));
