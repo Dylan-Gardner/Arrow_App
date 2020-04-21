@@ -5,12 +5,12 @@ const initialState = {
   avgSpeed: 0.0,
   gain: 0.0,
   loss: 0.0,
-  alt: 0,
-  alts: [],
-  altMin: 99999999,
-  altMax: -99999,
-  prev_alt: 0,
+  alt: null,
+  altMin: null,
+  altMax: null,
+  prev_alt: null,
   started: false,
+  reset: false,
 };
 // Reducers (Modifies The State And Returns A New State)
 const workoutReducer = (state = initialState, action) => {
@@ -21,7 +21,8 @@ const workoutReducer = (state = initialState, action) => {
         ...state,
         distance: action.distance,
         speed: action.speed,
-        alts: state.alts.concat(action.altitude),
+        alt: action.alt,
+        prev_alt: state.alt,
       };
     }
     case 'workoutStarted': {
@@ -30,16 +31,22 @@ const workoutReducer = (state = initialState, action) => {
         started: true,
       };
     }
+    case 'resetReset': {
+      return {
+        ...state,
+        reset: false,
+      };
+    }
+    case 'resetKalman': {
+      return {
+        ...state,
+        reset: true,
+      };
+    }
     case 'workoutEnded': {
       return {
         ...state,
         started: false,
-      };
-    }
-    case 'clearAlts': {
-      return {
-        ...state,
-        alts: [],
       };
     }
     case 'incDuration': {
@@ -49,47 +56,35 @@ const workoutReducer = (state = initialState, action) => {
         duration: state.duration + 1,
       };
     }
-    case 'updateAlt': {
-      return {
-        ...state,
-        alt: action.alt,
-        prev_alt: state.alt,
-      };
-    }
     case 'calcGain': {
       var options = {};
-      if (state.altMax < state.alt) {
+      if (state.altMax < state.alt || state.altMax === null) {
         options = {
           ...options,
           altMax: state.alt,
         };
       }
-      if (state.altMin > state.alt) {
+      if (state.altMin > state.alt || state.altMin === null) {
         options = {
           ...options,
           altMin: state.alt,
         };
       }
-      var calc = state.alt - state.prev_alt;
-      if (calc > 0) {
-        options = {
-          ...options,
-          gain: state.gain + calc,
-        };
-      } else {
-        options = {
-          ...options,
-          loss: state.loss + calc,
-        };
+      if (state.prev_alt !== null) {
+        var calc = state.alt - state.prev_alt;
+        if (calc > 0) {
+          options = {
+            ...options,
+            gain: state.gain + calc,
+          };
+        } else if (calc < 0) {
+          options = {
+            ...options,
+            loss: state.loss + calc,
+          };
+        }
       }
-      options = {
-        ...state,
-        ...options,
-      };
-      console.log(options);
-      return {
-        options,
-      };
+      return Object.assign(state, options);
     }
     case 'resetWorkout': {
       return {
@@ -99,12 +94,12 @@ const workoutReducer = (state = initialState, action) => {
         avgSpeed: 0.0,
         gain: 0.0,
         loss: 0.0,
-        alt: 0,
-        alts: [],
-        altMin: 99999999,
-        altMax: -9999,
-        prev_alt: 0,
+        alt: null,
+        altMin: null,
+        altMax: null,
+        prev_alt: null,
         started: false,
+        reset: true,
       };
     }
     // Default

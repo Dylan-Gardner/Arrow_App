@@ -1,18 +1,13 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
-import KalmanFilter from 'kalmanjs';
 import {
   workoutStarted,
   workoutEnded,
   incDuration,
   reset,
-  clearAlts,
-  updateAlt,
-  calcGain,
+  resetKalman,
 } from '../redux/actions/workoutActions';
-
-const arrAvg = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
 
 class RideTracking extends Component {
   constructor(props) {
@@ -39,11 +34,7 @@ class RideTracking extends Component {
   tick = () => {
     this.props.incDuration();
     if (this.props.workout.duration % 5 === 0) {
-      var kalmanFilter = new KalmanFilter({R: 0.01, Q: 3});
-      var altKalman = this.props.workout.alts.map(function(v) {
-        return kalmanFilter.filter(v);
-      });
-      this.props.updateAlt(arrAvg(altKalman));
+      this.props.resetKalman();
     }
   };
 
@@ -61,6 +52,7 @@ class RideTracking extends Component {
     if (Time.substr(0, 3) === '00:') {
       Time = Time.substr(3, 5);
     }
+
     return (
       <View style={styles.container}>
         <View style={styles.row}>
@@ -84,7 +76,7 @@ class RideTracking extends Component {
           </View>
           <View style={styles.box}>
             <Text style={styles.boxText}>
-              {this.props.workout.avgSpeed.toFixed(1) || 0}
+              {this.props.workout.avgSpeed.toFixed(0) || 0}
             </Text>
             <Text style={styles.boxText}>AVG SPEED (MPH)</Text>
           </View>
@@ -92,18 +84,22 @@ class RideTracking extends Component {
         <View style={styles.row}>
           <View style={styles.alt_box}>
             <Text style={styles.boxText}>
-              {(this.props.workout.gain + this.props.workout.loss).toFixed(1) ||
+              {(this.props.workout.gain + this.props.workout.loss).toFixed(0) ||
                 0}
             </Text>
             <Text style={styles.boxText}>ALTITUDE CHANGE (FT)</Text>
           </View>
           <View style={styles.box}>
             <Text style={styles.boxText}>
-              {this.props.workout.altMin.toFixed(1) || 0}
+              {(!!this.props.workout.altMin &&
+                this.props.workout.altMin.toFixed(0)) ||
+                0}
             </Text>
             <Text style={styles.boxText}>Min</Text>
             <Text style={styles.boxText}>
-              {this.props.workout.altMax.toFixed(1) || 0}
+              {(!!this.props.workout.altMax &&
+                this.props.workout.altMax.toFixed(0)) ||
+                0}
             </Text>
             <Text style={styles.boxText}>Max</Text>
           </View>
@@ -218,10 +214,8 @@ const mapDispatchToProps = dispatch => {
     reset: () => {
       dispatch(reset());
     },
-    updateAlt: alt => {
-      dispatch(updateAlt(alt));
-      dispatch(clearAlts());
-      dispatch(calcGain());
+    resetKalman: () => {
+      dispatch(resetKalman());
     },
   };
 };
