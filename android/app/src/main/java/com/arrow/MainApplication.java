@@ -29,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
             packages.add(new SpotifyInfoPackager());
             packages.add(new MapboxNavigationViewPackage());
+            packages.add(new KalmanFilterPackager());
             //packages.add(new RCTMGLPackage());
           return packages;
         }

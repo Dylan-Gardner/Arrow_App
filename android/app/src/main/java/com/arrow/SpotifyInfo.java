@@ -26,7 +26,7 @@ public class SpotifyInfo extends ReactContextBaseJavaModule implements Lifecycle
     private final ReactApplicationContext reactContext;
 
     private static final String CLIENT_ID = "3ec3064e4dfc4b78b14b72ad3e914c2c";
-    private static final String REDIRECT_URI = "http://com.bike_app/callback";
+    private static final String REDIRECT_URI = "http://com.arrow/callback";
     private SpotifyAppRemote mSpotifyAppRemote;
     private PlayerApi mPlayerApi;
 

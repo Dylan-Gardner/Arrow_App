@@ -2,8 +2,10 @@ const initialState = {
   current: {
     latitude: null,
     longitude: null,
+    timestamp: null,
     prev_lat: null,
     prev_long: null,
+    prev_timestamp: null,
   },
   destination: {
     latitude: null,
@@ -27,8 +29,10 @@ const mapReducer = (state = initialState, action) => {
         current: {
           latitude: action.latitude,
           longitude: action.longitude,
+          timestamp: action.timestamp,
           prev_lat: state.current.latitude,
           prev_long: state.current.longitude,
+          prev_timestamp: state.current.timestamp,
         },
       };
     }

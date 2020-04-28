@@ -33,7 +33,7 @@ class RideTracking extends Component {
 
   tick = () => {
     this.props.incDuration();
-    if (this.props.workout.duration % 5 === 0) {
+    if (this.props.workout.duration % 10 === 0) {
       this.props.resetKalman();
     }
   };
@@ -85,7 +85,7 @@ class RideTracking extends Component {
           <View style={styles.alt_box}>
             <Text style={styles.boxText}>
               {(this.props.workout.gain + this.props.workout.loss).toFixed(0) ||
-                0}
+                '-'}
             </Text>
             <Text style={styles.boxText}>ALTITUDE CHANGE (FT)</Text>
           </View>
@@ -93,13 +93,13 @@ class RideTracking extends Component {
             <Text style={styles.boxText}>
               {(!!this.props.workout.altMin &&
                 this.props.workout.altMin.toFixed(0)) ||
-                0}
+                '-'}
             </Text>
             <Text style={styles.boxText}>Min</Text>
             <Text style={styles.boxText}>
               {(!!this.props.workout.altMax &&
                 this.props.workout.altMax.toFixed(0)) ||
-                0}
+                '-'}
             </Text>
             <Text style={styles.boxText}>Max</Text>
           </View>

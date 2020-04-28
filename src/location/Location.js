@@ -5,6 +5,7 @@ import {currUpdate} from '../redux/actions/mapActions';
 import {initUpdate} from '../redux/actions/initActions';
 import {gpsUpdate, calcGain, resetReset} from '../redux/actions/workoutActions';
 import TabHeader from '../TabHeader.js';
+import {NativeModules, NativeEventEmitter} from 'react-native';
 const haversine = require('haversine');
 import KalmanFilter from 'kalmanjs';
 var longkalman = new KalmanFilter({R: 0.01, Q: 3});
@@ -32,8 +33,73 @@ class Location extends Component {
         android: 'balancedPowerAccuracy',
       },
     });
+    RNLocation.getLatestLocation(
+      locations => {
+        if (
+          !locations[0].fromMockProvider &&
+          Object.keys(locations[0]).length !== 0
+        ) {
+          // TODO: CHANGE FOR PRODUCTION ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          //
+          //console.log(locations[0]);
+          var lat = parseFloat(locations[0].latitude);
+          var long = parseFloat(locations[0].longitude);
 
-    RNLocation.requestPermission({
+          this.props.currUpdate(
+            latkalman.filter(lat),
+            longkalman.filter(long),
+            locations[0].timestamp / 1000.0,
+          );
+          //Workout info update
+          if (this.props.workout.started) {
+            if (this.props.workout.reset) {
+              this.reset();
+              this.props.resetReset();
+            }
+            const altitude = locations[0].altitude / 0.3048;
+            const start = {
+              latitude: this.props.current.prev_lat,
+              longitude: this.props.current.prev_long,
+            };
+            const end = {
+              latitude: this.props.current.latitude,
+              longitude: this.props.current.longitude,
+            };
+            var dist = haversine(start, end, {unit: 'mile'}) || 0;
+            var distance = this.props.workout.distance + dist; //calc distance with haversine formula to account for curve in earth
+
+            if (start.latitude == null && start.longitude == null) {
+              distance = this.props.workout.distance;
+            }
+            var speed =
+              dist /
+              ((this.props.current.timestamp -
+                this.props.current.prev_timestamp) /
+                36000);
+            if (this.props.current.prev_timestamp == null) {
+              speed = 0;
+            }
+            this.props.gpsUpdate(
+              speed,
+              distance,
+              altkalman.filter(altitude),
+            );
+            console.log('#######', this.props.workout);
+          }
+          if (this.state.initalCords.lat == null) {
+            this.setState({
+              initalCords: {
+                lat: lat,
+                long: long,
+              },
+            });
+            this.props.initUpdate(lat, long);
+          }
+      }
+    )
+
+    NativeModules.KalmanFilter.init();
+    /*RNLocation.requestPermission({
       ios: 'whenInUse',
       android: {
         detail: 'fine',
@@ -55,6 +121,7 @@ class Location extends Component {
               this.props.currUpdate(
                 latkalman.filter(lat),
                 longkalman.filter(long),
+                locations[0].timestamp / 1000.0,
               );
               //Workout info update
               if (this.props.workout.started) {
@@ -62,7 +129,7 @@ class Location extends Component {
                   this.reset();
                   this.props.resetReset();
                 }
-                const altitude = locations[0].altitude;
+                const altitude = locations[0].altitude / 0.3048;
                 const start = {
                   latitude: this.props.current.prev_lat,
                   longitude: this.props.current.prev_long,
@@ -71,16 +138,22 @@ class Location extends Component {
                   latitude: this.props.current.latitude,
                   longitude: this.props.current.longitude,
                 };
-                var distance = //calc distance with haversine formula to account for curve in earth
-                  this.props.workout.distance +
-                    haversine(start, end, {unit: 'mile'}) || 0;
+                var dist = haversine(start, end, {unit: 'mile'}) || 0;
+                var distance = this.props.workout.distance + dist; //calc distance with haversine formula to account for curve in earth
 
                 if (start.latitude == null && start.longitude == null) {
                   distance = this.props.workout.distance;
                 }
-
+                var speed =
+                  dist /
+                  ((this.props.current.timestamp -
+                    this.props.current.prev_timestamp) /
+                    36000);
+                if (this.props.current.prev_timestamp == null) {
+                  speed = 0;
+                }
                 this.props.gpsUpdate(
-                  locations[0].speed,
+                  speed,
                   distance,
                   altkalman.filter(altitude),
                 );
@@ -99,7 +172,7 @@ class Location extends Component {
           },
         );
       }
-    });
+    });*/
   }
   reset() {
     longkalman = new KalmanFilter({R: 0.01, Q: 3});
@@ -124,8 +197,8 @@ const mapStateToProps = state => {
 // Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
 const mapDispatchToProps = dispatch => {
   return {
-    currUpdate: (latitude, longitude) => {
-      dispatch(currUpdate(latitude, longitude));
+    currUpdate: (latitude, longitude, timestamp) => {
+      dispatch(currUpdate(latitude, longitude, timestamp));
     },
     gpsUpdate: (speed, distance, altitude) => {
       dispatch(gpsUpdate(speed, distance, altitude));

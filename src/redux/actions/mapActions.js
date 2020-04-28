@@ -1,7 +1,8 @@
-export const currUpdate = (latitude, longitude) => ({
+export const currUpdate = (latitude, longitude, timestamp) => ({
   type: 'CURR_POS',
   latitude: latitude,
   longitude: longitude,
+  timestamp: timestamp,
 });
 
 export const destUpdate = (latitude, longitude, address) => ({
