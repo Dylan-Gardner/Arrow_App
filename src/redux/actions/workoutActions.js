@@ -18,12 +18,6 @@ export const incDuration = () => ({
 export const reset = () => ({
   type: 'resetWorkout',
 });
-export const resetReset = () => ({
-  type: 'resetReset',
-});
-export const resetKalman = () => ({
-  type: 'resetKalman',
-});
 export const calcGain = () => ({
   type: 'calcGain',
 });

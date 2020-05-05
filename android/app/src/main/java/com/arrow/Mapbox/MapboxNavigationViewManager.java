@@ -3,6 +3,8 @@ package com.arrow.Mapbox;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.Nullable;
+
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -99,6 +101,7 @@ public class MapboxNavigationViewManager extends SimpleViewManager<FrameLayout> 
                 NavigationLauncherOptions options = NavigationLauncherOptions.builder()
                         .directionsRoute(response.body().routes().get(0)).shouldSimulateRoute(true)
                         .build();
+                Log.i("NAV_STAT","Start Navigation");
                 NavLauncher.startNavigation( context.getCurrentActivity(), options);
             }
         });

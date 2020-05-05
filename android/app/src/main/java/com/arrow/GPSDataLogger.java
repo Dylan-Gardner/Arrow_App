@@ -11,7 +11,9 @@ import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
 
 import com.elvishew.xlog.XLog;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
@@ -25,7 +27,7 @@ import mad.location.manager.lib.Loggers.GeohashRTFilter;
 public class GPSDataLogger implements LocationListener {
 
     private LocationManager m_locationManager = null;
-    private Context m_context = null;
+    private ReactApplicationContext m_context = null;
     private String m_lastLoggedGPSMessage;
     private GeohashRTFilter m_geoHashRTFilter;
 
@@ -34,7 +36,7 @@ public class GPSDataLogger implements LocationListener {
     }
 
     public GPSDataLogger(LocationManager locationManager,
-                         Context context,GeohashRTFilter geoHashRTFilter) {
+                         ReactApplicationContext context,GeohashRTFilter geoHashRTFilter) {
         m_locationManager = locationManager;
         m_context = context;
         m_geoHashRTFilter = geoHashRTFilter;
@@ -58,6 +60,7 @@ public class GPSDataLogger implements LocationListener {
         if (m_locationManager == null)
             return;
         m_locationManager.removeUpdates(this);
+        m_geoHashRTFilter.stop();
     }
 
     public void locationChanged(Location loc) {
@@ -71,15 +74,25 @@ public class GPSDataLogger implements LocationListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && loc.hasAccuracy()) {
             speedAccuracyMpS = loc.getSpeedAccuracyMetersPerSecond();
         }
+        m_geoHashRTFilter.filter(loc);
+
 
 
         m_lastLoggedGPSMessage = String.format("GPS : pos lat=%f, lon=%f, alt=%f, hdop=%f, speed=%f, bearing=%f, sa=%f",
                 loc.getLatitude(),
                 loc.getLongitude(), loc.getAltitude(), loc.getAccuracy(),
                 loc.getSpeed(), loc.getBearing(), speedAccuracyMpS);
-        XLog.i(m_lastLoggedGPSMessage);
-        String distance = String.format("KalmanDistance : %fm", m_geoHashRTFilter.getDistanceGeoFiltered());
-        XLog.i(distance);
+        //XLog.i(m_lastLoggedGPSMessage);
+        String distance = String.format("KalmanDistance : %fm", m_geoHashRTFilter.getDistanceAsIs());
+        //XLog.i(distance);
+
+        WritableMap params = Arguments.createMap();
+        params.putDouble("lat",loc.getLatitude());
+        params.putDouble("long", loc.getLongitude());
+        params.putDouble("alt", loc.getAltitude()*3.28084);
+        params.putDouble("speed", loc.getSpeed() * 2.237);
+        params.putDouble("distance", m_geoHashRTFilter.getDistanceAsIs()/1609.0);
+        sendEvent(m_context, "GPS", params);
     }
 
     private void sendEvent(ReactApplicationContext reactContext,

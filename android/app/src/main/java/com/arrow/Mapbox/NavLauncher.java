@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
@@ -47,6 +48,7 @@ public class NavLauncher {
         }
 
         editor.apply();
+        //Log.i("NAV_STAT","Start Navigation");
 
         Intent navigationActivity = new Intent(activity, MapNavActivity.class);
         storeInitialMapPosition(options, navigationActivity);

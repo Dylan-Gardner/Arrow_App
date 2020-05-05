@@ -17,7 +17,6 @@ import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.FilePrinter;
 import com.elvishew.xlog.printer.file.backup.FileSizeBackupStrategy;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
-import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -32,18 +31,14 @@ import mad.location.manager.lib.Commons.Utils;
 import mad.location.manager.lib.Interfaces.ILogger;
 import mad.location.manager.lib.Interfaces.LocationServiceInterface;
 import mad.location.manager.lib.Loggers.GeohashRTFilter;
-import mad.location.manager.lib.SensorAux.SensorCalibrator;
 import mad.location.manager.lib.Services.KalmanLocationService;
 import mad.location.manager.lib.Services.ServicesHelper;
 
-public class KalmanFilter extends ReactContextBaseJavaModule implements LocationServiceInterface, LifecycleEventListener, ILogger {
+public class KalmanFilter extends ReactContextBaseJavaModule implements LocationServiceInterface, ILogger {
 
 
     private final ReactApplicationContext reactContext;
     private GeohashRTFilter m_geoHashRTFilter;
-    private SensorCalibrator m_sensorCalibrator = null;
-    private boolean m_isLogging = false;
-    private boolean m_isCalibrating = false;
     private GPSDataLogger m_logger;
 
     public KalmanFilter(ReactApplicationContext reactContext) {
@@ -124,11 +119,6 @@ public class KalmanFilter extends ReactContextBaseJavaModule implements Location
     }
 
 
-    @Override
-    public void onHostResume() {
-
-    }
-
     private void initActivity() {
 
         String[] interestedPermissions;
@@ -158,7 +148,6 @@ public class KalmanFilter extends ReactContextBaseJavaModule implements Location
         }
         m_logger = new GPSDataLogger(locationManager, reactContext, m_geoHashRTFilter);
 
-        m_sensorCalibrator = new SensorCalibrator(sensorManager);
         ServicesHelper.getLocationService(reactContext, value -> {
             set_isLogging(value.IsRunning());
         });
@@ -173,6 +162,12 @@ public class KalmanFilter extends ReactContextBaseJavaModule implements Location
     @ReactMethod
     public void endService(){
         set_isLogging(false);
+    }
+
+    @ReactMethod
+    public void resetService(){
+        m_geoHashRTFilter.stop();
+        m_geoHashRTFilter.reset(this);
     }
 
     @Override
@@ -205,7 +200,7 @@ public class KalmanFilter extends ReactContextBaseJavaModule implements Location
                                 2,
                                 10,
                                 this,
-                                true,
+                                false,
                                 Utils.DEFAULT_VEL_FACTOR,
                                 Utils.DEFAULT_POS_FACTOR
                         );
@@ -217,17 +212,6 @@ public class KalmanFilter extends ReactContextBaseJavaModule implements Location
             m_logger.stop();
             ServicesHelper.getLocationService(reactContext, KalmanLocationService::stop);
         }
-        m_isLogging = isLogging;
-    }
-
-    @Override
-    public void onHostPause() {
-
-    }
-
-    @Override
-    public void onHostDestroy(){
-
     }
 
 }

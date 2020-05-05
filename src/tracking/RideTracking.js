@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
+import {NativeModules} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 import {
   workoutStarted,
   workoutEnded,
   incDuration,
   reset,
-  resetKalman,
 } from '../redux/actions/workoutActions';
 
 class RideTracking extends Component {
@@ -17,25 +19,55 @@ class RideTracking extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.screenProps.callback({
+      ride_tracking: {
+        running: false,
+      },
+    });
+  }
+
   componentWillUnmount() {
     clearInterval(this.state.timer);
   }
   toggleWorkout = () => {
     if (!this.props.workout.started) {
+      NativeModules.KalmanFilter.startService();
       this.props.toggleWorkout(this.props.workout.started);
       let timr = setInterval(this.tick, 1000);
       this.setState({timer: timr});
     } else {
       this.props.toggleWorkout(this.props.workout.started);
       clearInterval(this.state.timer);
+      NativeModules.KalmanFilter.endService();
+      this.props.screenProps.callback({
+        ride_tracking: {
+          running: false,
+        },
+      });
     }
   };
 
   tick = () => {
     this.props.incDuration();
-    if (this.props.workout.duration % 10 === 0) {
-      this.props.resetKalman();
+
+    var gain = Math.round(this.props.workout.gain + this.props.workout.loss);
+    var measuredTime = new Date(null);
+    measuredTime.setSeconds(this.props.workout.duration || 0);
+    var Time = measuredTime.toISOString().substr(11, 8);
+    if (Time.substr(0, 3) === '00:') {
+      Time = Time.substr(3, 5);
     }
+
+    this.props.screenProps.callback({
+      ride_tracking: {
+        distance: this.props.workout.distance.toFixed(1),
+        speed: Math.round(this.props.workout.speed),
+        avg_speed: Math.round(this.props.workout.avgSpeed),
+        gain: gain,
+        time_ride: Time,
+      },
+    });
   };
 
   resetWorkout = () => {
@@ -60,48 +92,55 @@ class RideTracking extends Component {
             <Text style={styles.boxText}>
               {this.props.workout.distance.toFixed(1) || 0.0}
             </Text>
-            <Text style={styles.boxText}>DISTANCE (MI)</Text>
+            <Text style={styles.labelText}>MI</Text>
           </View>
           <View style={styles.box}>
             <Text style={styles.boxText}>
-              {this.props.workout.speed.toFixed(1) || 0.0}
+              {this.props.workout.speed.toFixed(0) || 0.0}
             </Text>
-            <Text style={styles.boxText}>SPEED (MPH)</Text>
+            <Text style={styles.labelText}>MPH</Text>
           </View>
         </View>
         <View style={styles.row}>
           <View style={styles.box}>
             <Text style={styles.boxText}>{Time}</Text>
-            <Text style={styles.boxText}>DURATION</Text>
+            <Text style={styles.labelText}>DURATION</Text>
           </View>
           <View style={styles.box}>
             <Text style={styles.boxText}>
               {this.props.workout.avgSpeed.toFixed(0) || 0}
             </Text>
-            <Text style={styles.boxText}>AVG SPEED (MPH)</Text>
+            <Text style={styles.labelText}>AVG SPEED</Text>
           </View>
         </View>
         <View style={styles.row}>
           <View style={styles.alt_box}>
             <Text style={styles.boxText}>
-              {(this.props.workout.gain + this.props.workout.loss).toFixed(0) ||
-                '-'}
+              {Math.round(this.props.workout.gain + this.props.workout.loss) ===
+                0 && '0'}
+              {Math.round(this.props.workout.gain + this.props.workout.loss) !==
+                0 &&
+                (this.props.workout.gain + this.props.workout.loss).toFixed(0)}
             </Text>
-            <Text style={styles.boxText}>ALTITUDE CHANGE (FT)</Text>
+            <Text style={styles.labelText}>ALT GAIN</Text>
           </View>
           <View style={styles.box}>
-            <Text style={styles.boxText}>
-              {(!!this.props.workout.altMin &&
-                this.props.workout.altMin.toFixed(0)) ||
-                '-'}
-            </Text>
-            <Text style={styles.boxText}>Min</Text>
-            <Text style={styles.boxText}>
-              {(!!this.props.workout.altMax &&
-                this.props.workout.altMax.toFixed(0)) ||
-                '-'}
-            </Text>
-            <Text style={styles.boxText}>Max</Text>
+            <View style={styles.row}>
+              <Icon name={'arrow-downward'} size={30} />
+              <Text style={styles.boxText}>
+                {(!!this.props.workout.altMin &&
+                  this.props.workout.altMin.toFixed(0)) ||
+                  '-'}
+              </Text>
+            </View>
+            <View style={styles.row}>
+              <Icon name={'arrow-upward'} size={30} />
+              <Text style={styles.boxText}>
+                {(!!this.props.workout.altMax &&
+                  this.props.workout.altMax.toFixed(0)) ||
+                  '-'}
+              </Text>
+            </View>
           </View>
         </View>
         <View style={styles.buttonBox}>
@@ -138,6 +177,8 @@ const styles = StyleSheet.create({
   row: {
     flex: 2,
     flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   box: {
     flex: 1,
@@ -187,8 +228,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   boxText: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: 'bold',
+  },
+  labelText: {
+    fontSize: 18,
+    //fontWeight: 'bold',
   },
 });
 
@@ -213,9 +258,6 @@ const mapDispatchToProps = dispatch => {
     },
     reset: () => {
       dispatch(reset());
-    },
-    resetKalman: () => {
-      dispatch(resetKalman());
     },
   };
 };

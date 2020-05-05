@@ -1,12 +1,5 @@
 import React, {Component} from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  PermissionsAndroid,
-} from 'react-native';
+import {Platform, StyleSheet, View, PermissionsAndroid} from 'react-native';
 import NavigationView from '../../NavigationView';
 import {NativeModules} from 'react-native';
 import {connect} from 'react-redux';
@@ -49,19 +42,17 @@ class NavigationUI extends Component {
     const {granted, fromLat, fromLong, toLat, toLong} = this.state;
     return (
       <View style={styles.container}>
-        {granted && (
-          <NavigationView
-            style={styles.navigation}
-            destination={{
-              lat: this.props.destination.latitude,
-              long: this.props.destination.longitude,
-            }}
-            origin={{
-              lat: this.props.current.latitude,
-              long: this.props.current.longitude,
-            }}
-          />
-        )}
+        <NavigationView
+          style={styles.navigation}
+          destination={{
+            lat: this.props.destination.latitude,
+            long: this.props.destination.longitude,
+          }}
+          origin={{
+            lat: this.props.current.latitude,
+            long: this.props.current.longitude,
+          }}
+        />
       </View>
     );
   }

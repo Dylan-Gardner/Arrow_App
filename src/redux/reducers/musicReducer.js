@@ -4,12 +4,11 @@ const initialState = {
   artistName: 'NA',
   isPlaying: false,
   trackLength: 0,
-  playbackPosition: 0
+  playbackPosition: 0,
 };
 // Reducers (Modifies The State And Returns A New State)
 const musicReducer = (state = initialState, action) => {
   switch (action.type) {
-    
     case 'SongUpdate': {
       return {
         // State
@@ -18,9 +17,9 @@ const musicReducer = (state = initialState, action) => {
         trackName: action.track,
         artistName: action.artist,
         trackLength: action.track_length,
-        isPlaying: action.isPlaying, 
-        playbackPosition:action.playbackPosition
-      }
+        isPlaying: action.isPlaying,
+        playbackPosition: action.playbackPosition,
+      };
     }
 
     // Default

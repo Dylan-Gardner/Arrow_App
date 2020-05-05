@@ -29,6 +29,7 @@ class DirectionBar extends Component {
         address = address.split(' ');
         address.length = address.length - 1;
         address = address.join(' ');
+        console.log(place.location);
         this.props.destUpdate(
           place.location.latitude,
           place.location.longitude,

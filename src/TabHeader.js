@@ -30,7 +30,9 @@ class TabHeader extends Component {
     super(props);
   }
   render() {
-    return <Navigation />;
+    return (
+      <Navigation screenProps={{callback: this.props.sendMessageCallback}} />
+    );
   }
 }
 

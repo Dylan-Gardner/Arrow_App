@@ -3,28 +3,18 @@ import {connect} from 'react-redux';
 import RNLocation from 'react-native-location';
 import {currUpdate} from '../redux/actions/mapActions';
 import {initUpdate} from '../redux/actions/initActions';
-import {gpsUpdate, calcGain, resetReset} from '../redux/actions/workoutActions';
+import {gpsUpdate, calcGain} from '../redux/actions/workoutActions';
 import TabHeader from '../TabHeader.js';
 import {NativeModules, NativeEventEmitter} from 'react-native';
-const haversine = require('haversine');
-import KalmanFilter from 'kalmanjs';
-var longkalman = new KalmanFilter({R: 0.01, Q: 3});
-var latkalman = new KalmanFilter({R: 0.01, Q: 3});
-var altkalman = new KalmanFilter({R: 0.01, Q: 3});
 
 class Location extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      initalCords: {
-        lat: null,
-        long: null,
-      },
-    };
+    this.state = {};
   }
-  componentDidMount() {
+  async componentDidMount() {
     RNLocation.configure({
-      distanceFilter: 1,
+      distanceFilter: 0,
       interval: 1000, // Milliseconds
       fastestInterval: 500, // Milliseconds
       maxWaitTime: 2000, // Milliseconds
@@ -33,73 +23,7 @@ class Location extends Component {
         android: 'balancedPowerAccuracy',
       },
     });
-    RNLocation.getLatestLocation(
-      locations => {
-        if (
-          !locations[0].fromMockProvider &&
-          Object.keys(locations[0]).length !== 0
-        ) {
-          // TODO: CHANGE FOR PRODUCTION ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-          //
-          //console.log(locations[0]);
-          var lat = parseFloat(locations[0].latitude);
-          var long = parseFloat(locations[0].longitude);
-
-          this.props.currUpdate(
-            latkalman.filter(lat),
-            longkalman.filter(long),
-            locations[0].timestamp / 1000.0,
-          );
-          //Workout info update
-          if (this.props.workout.started) {
-            if (this.props.workout.reset) {
-              this.reset();
-              this.props.resetReset();
-            }
-            const altitude = locations[0].altitude / 0.3048;
-            const start = {
-              latitude: this.props.current.prev_lat,
-              longitude: this.props.current.prev_long,
-            };
-            const end = {
-              latitude: this.props.current.latitude,
-              longitude: this.props.current.longitude,
-            };
-            var dist = haversine(start, end, {unit: 'mile'}) || 0;
-            var distance = this.props.workout.distance + dist; //calc distance with haversine formula to account for curve in earth
-
-            if (start.latitude == null && start.longitude == null) {
-              distance = this.props.workout.distance;
-            }
-            var speed =
-              dist /
-              ((this.props.current.timestamp -
-                this.props.current.prev_timestamp) /
-                36000);
-            if (this.props.current.prev_timestamp == null) {
-              speed = 0;
-            }
-            this.props.gpsUpdate(
-              speed,
-              distance,
-              altkalman.filter(altitude),
-            );
-            console.log('#######', this.props.workout);
-          }
-          if (this.state.initalCords.lat == null) {
-            this.setState({
-              initalCords: {
-                lat: lat,
-                long: long,
-              },
-            });
-            this.props.initUpdate(lat, long);
-          }
-      }
-    )
-
-    NativeModules.KalmanFilter.init();
-    /*RNLocation.requestPermission({
+    await RNLocation.requestPermission({
       ios: 'whenInUse',
       android: {
         detail: 'fine',
@@ -107,81 +31,46 @@ class Location extends Component {
     }).then(granted => {
       if (granted) {
         this.locationSubscription = RNLocation.subscribeToLocationUpdates(
-          locations => {
+          location => {
             if (
-              !locations[0].fromMockProvider &&
-              Object.keys(locations[0]).length !== 0
+              !location.fromMockProvider &&
+              Object.keys(location[0]).length !== 0 &&
+              !this.props.navigation
             ) {
-              // TODO: CHANGE FOR PRODUCTION ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-              //
-              //console.log(locations[0]);
-              var lat = parseFloat(locations[0].latitude);
-              var long = parseFloat(locations[0].longitude);
+              // TODO: CHANGE TO NOT MOCK FOR PRODUCTION ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              var lat = parseFloat(location[0].latitude);
+              var long = parseFloat(location[0].longitude);
 
-              this.props.currUpdate(
-                latkalman.filter(lat),
-                longkalman.filter(long),
-                locations[0].timestamp / 1000.0,
-              );
-              //Workout info update
-              if (this.props.workout.started) {
-                if (this.props.workout.reset) {
-                  this.reset();
-                  this.props.resetReset();
-                }
-                const altitude = locations[0].altitude / 0.3048;
-                const start = {
-                  latitude: this.props.current.prev_lat,
-                  longitude: this.props.current.prev_long,
-                };
-                const end = {
-                  latitude: this.props.current.latitude,
-                  longitude: this.props.current.longitude,
-                };
-                var dist = haversine(start, end, {unit: 'mile'}) || 0;
-                var distance = this.props.workout.distance + dist; //calc distance with haversine formula to account for curve in earth
-
-                if (start.latitude == null && start.longitude == null) {
-                  distance = this.props.workout.distance;
-                }
-                var speed =
-                  dist /
-                  ((this.props.current.timestamp -
-                    this.props.current.prev_timestamp) /
-                    36000);
-                if (this.props.current.prev_timestamp == null) {
-                  speed = 0;
-                }
-                this.props.gpsUpdate(
-                  speed,
-                  distance,
-                  altkalman.filter(altitude),
-                );
-                console.log('#######', this.props.workout);
-              }
-              if (this.state.initalCords.lat == null) {
-                this.setState({
-                  initalCords: {
-                    lat: lat,
-                    long: long,
-                  },
-                });
-                this.props.initUpdate(lat, long);
-              }
+              this.props.currUpdate(lat, long);
             }
           },
         );
       }
-    });*/
+    });
+    RNLocation.getLatestLocation()
+      .then(location => {
+        if (!location.fromMockProvider && Object.keys(location).length !== 0) {
+          // TODO: CHANGE TO NOT MOCK FOR PRODUCTION ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          var lat = parseFloat(location.latitude);
+          var long = parseFloat(location.longitude);
+          this.props.currUpdate(lat, long);
+          this.props.initUpdate(lat, long);
+        }
+      })
+      .catch(error => console.log(error));
+
+    NativeModules.KalmanFilter.init();
+    const eventEmitter = new NativeEventEmitter(NativeModules.GPSDataLogger);
+    eventEmitter.addListener('GPS', event => {
+      this.props.gpsUpdate(event.speed, event.distance, event.alt);
+    });
   }
   reset() {
-    longkalman = new KalmanFilter({R: 0.01, Q: 3});
-    latkalman = new KalmanFilter({R: 0.01, Q: 3});
-    altkalman = new KalmanFilter({R: 0.01, Q: 3});
+    NativeModules.KalmanFilter.resetService();
   }
 
   render() {
-    return <TabHeader reset={this.reset} />;
+    return <TabHeader sendMessageCallback={this.props.sendMessageCallback} />;
   }
 }
 
@@ -197,8 +86,8 @@ const mapStateToProps = state => {
 // Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
 const mapDispatchToProps = dispatch => {
   return {
-    currUpdate: (latitude, longitude, timestamp) => {
-      dispatch(currUpdate(latitude, longitude, timestamp));
+    currUpdate: (latitude, longitude) => {
+      dispatch(currUpdate(latitude, longitude));
     },
     gpsUpdate: (speed, distance, altitude) => {
       dispatch(gpsUpdate(speed, distance, altitude));
@@ -206,9 +95,6 @@ const mapDispatchToProps = dispatch => {
     },
     initUpdate: (latitude, longitude) => {
       dispatch(initUpdate(latitude, longitude));
-    },
-    resetReset: () => {
-      dispatch(resetReset());
     },
   };
 };

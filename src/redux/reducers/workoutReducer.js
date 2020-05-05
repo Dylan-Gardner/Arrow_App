@@ -23,24 +23,13 @@ const workoutReducer = (state = initialState, action) => {
         speed: action.speed,
         alt: action.alt,
         prev_alt: state.alt,
+        avgSpeed: action.distance / (state.duration / 3600) || 0.0,
       };
     }
     case 'workoutStarted': {
       return {
         ...state,
         started: true,
-      };
-    }
-    case 'resetReset': {
-      return {
-        ...state,
-        reset: false,
-      };
-    }
-    case 'resetKalman': {
-      return {
-        ...state,
-        reset: true,
       };
     }
     case 'workoutEnded': {
@@ -52,7 +41,6 @@ const workoutReducer = (state = initialState, action) => {
     case 'incDuration': {
       return {
         ...state,
-        avgSpeed: state.distance / ((state.duration + 1) / 3600),
         duration: state.duration + 1,
       };
     }

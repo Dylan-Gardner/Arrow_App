@@ -81,6 +81,7 @@ class BluetoothHeader extends Component {
   }
 
   sendMessage = message => {
+    console.log('MESSAGE SENT', JSON.stringify(message));
     if (this.state.device && this.props.deviceConnected) {
       //console.log(message);
       let objJsonStr = JSON.stringify(message);
