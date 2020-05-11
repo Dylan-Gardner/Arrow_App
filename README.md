@@ -4,4 +4,4 @@ This is one half of my groups Senior Design project. Our project consisted of a 
 The basis of this project was to design a system that minimizes distractions while on a bike ride. In order to do this we 
 utilized React Native to simplify production.
 
- ![Bike Diagram](https://github.com/Dylan-Gardner/Arrow_App/BikeDiagram.png)
+ ![Bike Diagram](https://github.com/Dylan-Gardner/Arrow_App/blob/master/BikeDiagram.png)
