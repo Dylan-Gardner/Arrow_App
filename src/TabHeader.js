@@ -26,8 +26,13 @@ const TabNavigator = createBottomTabNavigator(
 let Navigation = createAppContainer(TabNavigator);
 
 class TabHeader extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
-    return <Navigation />;
+    return (
+      <Navigation screenProps={{callback: this.props.sendMessageCallback}} />
+    );
   }
 }
 

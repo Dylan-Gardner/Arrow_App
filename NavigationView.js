@@ -1,27 +1,14 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { requireNativeComponent } from "react-native";
-
-type Props = {
-  origin: {
-    lat: number,
-    long: number
-  },
-  destination: {
-    lat: number,
-    long: number
-  },
-  style?: Object
-};
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {requireNativeComponent} from 'react-native';
 
 const MapboxNavigationView = requireNativeComponent(
-  "MapboxNavigationView",
-  NavigationView
+  'MapboxNavigationView',
+  NavigationView,
 );
 
-export default class NavigationView extends Component<any, Props, any> {
+export default class NavigationView extends Component {
   render() {
-    debugger;
     return <MapboxNavigationView style={this.props.style} {...this.props} />;
   }
 }
@@ -29,10 +16,10 @@ export default class NavigationView extends Component<any, Props, any> {
 NavigationView.propTypes = {
   origin: PropTypes.shape({
     lat: PropTypes.number,
-    long: PropTypes.number
+    long: PropTypes.number,
   }).isRequired,
   destination: PropTypes.shape({
     lat: PropTypes.number,
-    long: PropTypes.number
-  }).isRequired
+    long: PropTypes.number,
+  }).isRequired,
 };

@@ -1,4 +1,4 @@
-package com.bike_app.Mapbox;
+package com.arrow.Mapbox;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -34,7 +34,7 @@ import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigationOptions;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationConstants;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
-import com.bike_app.R;
+import com.arrow.R;
 
 import retrofit2.Call;
 import retrofit2.Callback;

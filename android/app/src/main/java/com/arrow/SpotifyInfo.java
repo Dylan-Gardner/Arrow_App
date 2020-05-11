@@ -1,4 +1,4 @@
-package com.bike_app;
+package com.arrow;
 
 import android.util.Log;
 
@@ -26,7 +26,7 @@ public class SpotifyInfo extends ReactContextBaseJavaModule implements Lifecycle
     private final ReactApplicationContext reactContext;
 
     private static final String CLIENT_ID = "3ec3064e4dfc4b78b14b72ad3e914c2c";
-    private static final String REDIRECT_URI = "http://com.bike_app/callback";
+    private static final String REDIRECT_URI = "http://com.arrow/callback";
     private SpotifyAppRemote mSpotifyAppRemote;
     private PlayerApi mPlayerApi;
 
@@ -38,6 +38,26 @@ public class SpotifyInfo extends ReactContextBaseJavaModule implements Lifecycle
     @Override
     public String getName() {
         return "SpotifyInfo";
+    }
+
+    @ReactMethod
+    public void resume(){
+        mPlayerApi.resume();
+    }
+
+    @ReactMethod
+    public void pause(){
+        mPlayerApi.pause();
+    }
+
+    @ReactMethod
+    public void skip(){
+        mPlayerApi.skipNext();
+    }
+
+    @ReactMethod
+    public void prev(){
+        mPlayerApi.skipPrevious();
     }
 
 
@@ -89,7 +109,7 @@ public class SpotifyInfo extends ReactContextBaseJavaModule implements Lifecycle
             params.putString("track_name", track.name);
             params.putString("artist_name", track.artist.name);
             params.putDouble("track_length", track.duration);
-            Log.d("MUSIC", "isPaused: " + playerState.isPaused + " position: " + playerState.playbackPosition);
+            //Log.d("MUSIC", "isPaused: " + playerState.isPaused + " position: " + playerState.playbackPosition);
             params.putBoolean("isPaused", playerState.isPaused);
             params.putDouble("position", playerState.playbackPosition);
             sendEvent(reactContext, "SongUpdate", params);

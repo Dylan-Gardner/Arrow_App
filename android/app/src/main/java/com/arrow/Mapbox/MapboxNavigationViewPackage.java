@@ -1,4 +1,4 @@
-package com.bike_app.Mapbox;
+package com.arrow.Mapbox;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;

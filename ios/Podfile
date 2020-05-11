@@ -1,8 +1,8 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'Bike_App' do
-  # Pods for Bike_App
+target 'Arrow' do
+  # Pods for Arrow
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
@@ -48,7 +48,7 @@ target 'Bike_App' do
 
 
 
-  target 'Bike_AppTests' do
+  target 'ArrowTests' do
     inherit! :search_paths
     # Pods for testing
   end

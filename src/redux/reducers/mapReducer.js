@@ -8,12 +8,6 @@ const initialState = {
     longitude: null,
     address: null,
   },
-  view: {
-    latitude: null,
-    longitude: null,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  },
   navigation: false,
 };
 
@@ -35,17 +29,6 @@ const mapReducer = (state = initialState, action) => {
           latitude: action.latitude,
           longitude: action.longitude,
           address: action.address,
-        },
-      };
-    }
-    case 'VIEW_UPDATE': {
-      return {
-        ...state,
-        view: {
-          latitude: action.latitude,
-          longitude: action.longitude,
-          latitudeDelta: action.LATITUDE_DELTA,
-          longitudeDelta: action.LONGITUDE_DELTA,
         },
       };
     }

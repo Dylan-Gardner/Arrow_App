@@ -4,13 +4,7 @@ import {View, Dimensions, StyleSheet, StatusBar} from 'react-native';
 import {connect} from 'react-redux';
 import exampleIcon from '../../images/marker.png';
 
-import {
-  destUpdate,
-  viewUpdate,
-  navStart,
-  navStop,
-} from '../redux/actions/mapActions';
-import {trackingPosUpdate} from '../redux/actions/workoutActions';
+import {destUpdate, navStart, navStop} from '../redux/actions/mapActions';
 import DirectionBar from './DirectionBar';
 
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -46,9 +40,63 @@ class Map extends Component {
     const eventEmitter = new NativeEventEmitter(ModuleWithEmitter);
     eventEmitter.addListener('NavCancel', event => {
       this.props.navStop();
+      this.props.screenProps.callback({
+        navigation: {
+          running: false,
+        },
+      });
     });
     eventEmitter.addListener('Navigation', event => {
-      console.log(event);
+      //TODO: parse event and send minimal info
+      //console.log(event);
+      //console.log(event.distanceRemaining * 5280);
+      var dist_rem, next_rem;
+      if (event.distanceRemaining * 5280 <= 500) {
+        dist_rem = this.closest(event.distanceRemaining * 5280) + ' ft';
+      } else {
+        dist_rem = event.distanceRemaining.toFixed(1) + ' mi';
+      }
+      if (event.nextStepDistance * 5280 <= 500) {
+        next_rem = this.closest(event.nextStepDistance * 5280) + ' ft';
+      } else {
+        next_rem = event.nextStepDistance.toFixed(1) + ' mi';
+      }
+      //{"TimeRemaining": 11.503540567159654, "distanceRemaining": 1.5576196515993384, "nextStepDistance": 0.03410572736640472, "nextStepInstruction": "Turn right onto East Burlington Street", "nextStepName": "East Burlington Street"}
+      this.props.screenProps.callback({
+        navigation: {
+          time_remaining: Math.round(event.TimeRemaining).toString() + ' min',
+          distance_remaining: dist_rem,
+          next_step_distance: next_rem,
+          next_road: event.nextStepName,
+          next_direction: event.nextStepInstruction,
+        },
+      });
+    });
+    this.props.screenProps.callback({
+      navigation: {
+        running: false,
+      },
+    });
+    if (!this.props.workout) {
+      this.props.screenProps.callback({
+        ride_tracking: {
+          running: false,
+        },
+      });
+    }
+  }
+
+  closest(needle) {
+    var haystack = [500, 250, 100, 50];
+    return haystack.reduce((a, b) => {
+      let aDiff = Math.abs(a - needle);
+      let bDiff = Math.abs(b - needle);
+
+      if (aDiff == bDiff) {
+        return a > b ? a : b;
+      } else {
+        return bDiff < aDiff ? b : a;
+      }
     });
   }
 
@@ -71,6 +119,9 @@ class Map extends Component {
   };
 
   async createLine() {
+    while (this.props.current.longitude == null) {
+      console.log('waiting');
+    }
     const reqOptions = {
       waypoints: [
         {
@@ -90,6 +141,8 @@ class Map extends Component {
       geometries: 'geojson',
       overview: 'full',
     };
+
+    console.log(reqOptions.waypoints[0], reqOptions.waypoints[1]);
 
     const res = await directionsClient.getDirections(reqOptions).send();
     var duration = res.body.routes[0].duration / 60;
@@ -169,7 +222,7 @@ class Map extends Component {
               style={styles.map}
               onPress={this.onPress}
               compassViewMargins={{x: 20, y: 80}}>
-              <MapboxGL.UserLocation visible={true} />
+              <MapboxGL.UserLocation visible={true} animated={false} />
               <MapboxGL.Camera
                 ref={this.camera}
                 zoomLevel={14}
@@ -261,6 +314,7 @@ const mapStateToProps = state => {
     view: state.mapReducer.view,
     init: state.initReducer.init,
     navigation: state.mapReducer.navigation,
+    workout: state.workoutReducer.started,
   };
 };
 // Map Dispatch To Props (Dispatch Actions To Reducers. Reducers Then Modify The Data And Assign It To Your Props)
@@ -269,13 +323,6 @@ const mapDispatchToProps = dispatch => {
     destUpdate: (latitude, longitude) => {
       dispatch(destUpdate(latitude, longitude));
     },
-
-    viewUpdate: (latitude, longitude, LATITUDE_DELTA, LONGITUDE_DELTA) => {
-      dispatch(
-        viewUpdate(latitude, longitude, LATITUDE_DELTA, LONGITUDE_DELTA),
-      );
-    },
-
     navStart: () => {
       dispatch(navStart());
     },

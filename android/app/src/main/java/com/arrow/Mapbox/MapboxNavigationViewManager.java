@@ -1,8 +1,10 @@
-package com.bike_app.Mapbox;
+package com.arrow.Mapbox;
 
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.Nullable;
+
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -18,7 +20,7 @@ import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.ui.v5.NavigationView;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
-import com.bike_app.R;
+import com.arrow.R;
 
 
 import retrofit2.Call;
@@ -99,6 +101,7 @@ public class MapboxNavigationViewManager extends SimpleViewManager<FrameLayout> 
                 NavigationLauncherOptions options = NavigationLauncherOptions.builder()
                         .directionsRoute(response.body().routes().get(0)).shouldSimulateRoute(true)
                         .build();
+                Log.i("NAV_STAT","Start Navigation");
                 NavLauncher.startNavigation( context.getCurrentActivity(), options);
             }
         });

@@ -1,4 +1,4 @@
-package com.bike_app.Mapbox;
+package com.arrow.Mapbox;
 
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import androidx.annotation.Nullable;
-import com.bike_app.R;
+import com.arrow.R;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
@@ -23,6 +23,7 @@ import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigationOpti
 import com.mapbox.services.android.navigation.v5.navigation.NavigationConstants;
 import com.mapbox.services.android.navigation.v5.routeprogress.ProgressChangeListener;
 import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress;
+import com.mapbox.services.android.navigation.v5.utils.abbreviation.StringAbbreviator;
 
 public class MapNavActivity extends ReactActivity implements OnNavigationReadyCallback,
         NavigationListener, ProgressChangeListener {
@@ -61,10 +62,21 @@ public class MapNavActivity extends ReactActivity implements OnNavigationReadyCa
         //Next Manuever
         //Next manuever Distance
         //seconday manuever if there is any
+        String direction;
+
+        double change = Math.abs(routeProgress.currentLegProgress().upComingStep().maneuver().bearingAfter() - routeProgress.currentLegProgress().upComingStep().maneuver().bearingBefore());
+        if (change > 180) {
+            direction = "Left";
+        }else if(change < 180){
+            direction = "Right";
+        }else{
+            direction = "U-Turn";
+        }
+        //Log.i("VALUE",Double.toString(change));
         WritableMap params = Arguments.createMap();
-        params.putString("nextStepInstruction", routeProgress.currentLegProgress().upComingStep().maneuver().instruction());
+        params.putString("nextStepInstruction", direction);
         params.putDouble("nextStepDistance", routeProgress.currentLegProgress().currentStepProgress().distanceRemaining() * 0.00062137119);
-        params.putString("currStepName", routeProgress.currentLegProgress().currentStep().name());
+        params.putString("nextStepName", routeProgress.currentLegProgress().upComingStep().name());
         params.putDouble("distanceRemaining", routeProgress.distanceRemaining() * 0.00062137119);
         params.putDouble("TimeRemaining", routeProgress.durationRemaining()/60);
         sendEvent("Navigation", params);
@@ -118,6 +130,10 @@ public class MapNavActivity extends ReactActivity implements OnNavigationReadyCa
     public void onStop() {
         super.onStop();
         navigationView.onStop();
+        finishNavigation();
+        WritableMap params = Arguments.createMap();
+        params.putBoolean("navigationCancelled", true);
+        sendEvent("NavCancel", params);
     }
 
     @Override

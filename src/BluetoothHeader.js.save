@@ -1,46 +1,26 @@
-import React, {Component} from 'react';
+Oimport React, {Component} from 'react';
 import {connect} from 'react-redux';
-
-import {connected, disconnected} from './redux/actions/bluetoothActions';
+O
+iOOOOmport {connected, disconnected} from './redux/actions/bluetoothActions';
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
-
+OO
 import {BleManager} from 'react-native-ble-plx';
 import MusicHeader from './music/MusicHeader';
-
+OOOOOBO
 const baseUUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
 const sendUUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
 const recvUUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
-
-var moment = require('moment');
-
-class BluetoothHeader extends Component {
-  constructor(props) {
-    super(props);
-    var now = moment();
+OOOOO
+class BluetootOOOOhHeader extends Component {
+  conOOstructor(props) {
+    supOBOAOOAOBOer(props);
     this.state = {
       device: null,
-      date: now.format('MM/DD/YYYY'),
-      time: now.format('hh:mm a'),
-      timer: setInterval(this.tick, 1000),
-    };
-    this.manager = new BleManager(); //new BleManagerOptions(restoreStateIdentifier, restoreStateFunction));
-    this.musicRef = React.createRef();
+    };OOO
+    this.manOager = new BleManager(); //new BleManagerOptions(restoreStateIdentifier, restoreStateFunction));
+    const musOOOOicRef = React.createRef();
   }
-
-  tick = () => {
-    var now = moment();
-    this.setState({
-      date: now.format('MM/DD/YYYY'),
-      time: now.format('hh:mm a'),
-    });
-    /*this.sendMessage({
-      home: {
-        date: this.state.date,
-        time: this.state.time,
-      },
-    });*/
-  };
 
   componentDidMount() {
     const subscription = this.manager.onStateChange(state => {
@@ -51,11 +31,8 @@ class BluetoothHeader extends Component {
     }, true);
   }
 
-  componentWillUnmount() {
-    clearInterval(this.state.timer);
-  }
-
   connectBluetooth() {
+    let that = this;
     this.state.device
       .connect()
       .then(device => {
@@ -81,11 +58,13 @@ class BluetoothHeader extends Component {
             var recv = Base64.decode(characteristic.value);
             console.log('RECV', recv);
             if (recv === 'skip') {
-              this.child.skip();
+              that.musicRef.current.skip();
             } else if (recv === 'prev') {
-              this.child.prev();
+              that.musicRef.current.prev();
             } else if (recv === 'playpause') {
-              this.child.playpause();
+              that.musicRef.current.playpause();
+            } else if (recv === 'startstop') {
+              that.musicRef.current.startstop();
             }
           },
         );
@@ -134,10 +113,7 @@ class BluetoothHeader extends Component {
 
   render() {
     return (
-      <MusicHeader
-        childRef={ref => (this.child = ref)}
-        sendMessageCallback={this.sendMessage}
-      />
+      <MusicHeader ref={this.musicRef} sendMessageCallback={this.sendMessage} />
     );
   }
 }

@@ -5,15 +5,22 @@ import {connect} from 'react-redux';
 import {songUpdate} from '../redux/actions/musicActions';
 import Location from '../location/Location.js';
 
+var count = 0;
+
 class MusicHeader extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      toggle: false,
+    };
   }
-
   componentDidMount() {
+    const {childRef} = this.props;
+    childRef(this);
     NativeModules.SpotifyInfo.startService();
     const eventEmitter = new NativeEventEmitter(NativeModules.SpotifyInfo);
     eventEmitter.addListener('SongUpdate', event => {
+      //console.log(event);
       this.props.songUpdate(
         event.track_name,
         event.artist_name,
@@ -21,19 +28,57 @@ class MusicHeader extends Component {
         event.isPaused,
         event.position,
       );
+      var dur = new Date(null);
+      dur.setSeconds(this.props.trackLength / 1000 || 0);
+      var durTime = dur.toISOString().substr(11, 8);
+      if (durTime.substr(0, 3) === '00:') {
+        durTime = durTime.substr(3, 5);
+      }
+      var pos = new Date(null);
+      pos.setSeconds(this.props.playbackPosition / 1000 || 0);
+      var posTime = pos.toISOString().substr(11, 8);
+      if (posTime.substr(0, 3) === '00:') {
+        posTime = posTime.substr(3, 5);
+      }
+      var progBar = Math.round(
+        (this.props.playbackPosition / this.props.trackLength) * 180,
+      );
       this.props.sendMessageCallback({
-        track: this.props.trackName,
-        artist: this.props.artistName,
-        track_length: this.props.trackLength,
-        playing: this.props.isPlaying,
-        position: this.props.playbackPosition,
+        music: {
+          track: this.props.trackName,
+          artist: this.props.artistName,
+          track_length: durTime,
+          playing: this.props.isPlaying,
+          position: posTime,
+          progressBar: 180 - progBar,
+        },
       });
-      //console.log(event);
     });
   }
 
+  componentWillUnmount() {
+    const {childRef} = this.props;
+    childRef(undefined);
+  }
+
+  skip() {
+    NativeModules.SpotifyInfo.skip();
+  }
+
+  prev() {
+    NativeModules.SpotifyInfo.prev();
+  }
+
+  playpause() {
+    if (this.props.isPlaying) {
+      NativeModules.SpotifyInfo.pause();
+    } else {
+      NativeModules.SpotifyInfo.resume();
+    }
+  }
+
   render() {
-    return <Location />;
+    return <Location sendMessageCallback={this.props.sendMessageCallback} />;
   }
 }
 
@@ -66,7 +111,7 @@ const mapDispatchToProps = dispatch => {
           trackLength,
           isPaused,
           playbackPosition,
-        )
+        ),
       );
     },
   };
