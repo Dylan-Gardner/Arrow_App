@@ -18,8 +18,13 @@ class DestinationBar extends Component {
         <TouchableOpacity
           style={styles.navigation}
           onPress={this.props.launchNavigation}>
-          <Text style={styles.text}>Go</Text>
-          <Icon name={'directions'} size={30} color={'#4285F4'} />
+          <Text style={(styles.text, styles.gotext)}>Go</Text>
+          <Icon
+            style={styles.icon}
+            name={'directions'}
+            size={30}
+            color={'#ffffff'}
+          />
         </TouchableOpacity>
       </DestinationBubble>
     );
@@ -31,16 +36,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 0,
     margin: 0,
+    width: '75%',
   },
   text: {
     paddingLeft: 10,
     paddingRight: 10,
     fontSize: 15,
   },
+  gotext: {
+    color: 'white',
+  },
+  icon: {
+    paddingLeft: 7,
+    paddingRight: 0,
+  },
   navigation: {
+    paddingLeft: 10,
+    paddingRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    backgroundColor: '#4285F4',
+    borderRadius: 10,
   },
 });
 

@@ -61,10 +61,10 @@ class RideTracking extends Component {
 
     this.props.screenProps.callback({
       ride_tracking: {
-        distance: this.props.workout.distance.toFixed(1),
-        speed: Math.round(this.props.workout.speed),
-        avg_speed: Math.round(this.props.workout.avgSpeed),
-        gain: gain,
+        distance: this.props.workout.distance.toFixed(1) + ' mi',
+        speed: Math.round(this.props.workout.speed) + ' mph',
+        avg_speed: 'avg ' + Math.round(this.props.workout.avgSpeed) + ' mph',
+        gain: gain + ' ft',
         time_ride: Time,
       },
     });
@@ -78,6 +78,11 @@ class RideTracking extends Component {
   };
 
   render() {
+    if (this.props.toggle) {
+      console.log("toggled");
+      this.toggleWorkout;
+      this.props.toggleCallback();
+    }
     var measuredTime = new Date(null);
     measuredTime.setSeconds(this.props.workout.duration || 0);
     var Time = measuredTime.toISOString().substr(11, 8);

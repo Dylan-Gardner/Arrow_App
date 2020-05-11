@@ -40,6 +40,26 @@ public class SpotifyInfo extends ReactContextBaseJavaModule implements Lifecycle
         return "SpotifyInfo";
     }
 
+    @ReactMethod
+    public void resume(){
+        mPlayerApi.resume();
+    }
+
+    @ReactMethod
+    public void pause(){
+        mPlayerApi.pause();
+    }
+
+    @ReactMethod
+    public void skip(){
+        mPlayerApi.skipNext();
+    }
+
+    @ReactMethod
+    public void prev(){
+        mPlayerApi.skipPrevious();
+    }
+
 
 
     @ReactMethod
@@ -89,7 +109,7 @@ public class SpotifyInfo extends ReactContextBaseJavaModule implements Lifecycle
             params.putString("track_name", track.name);
             params.putString("artist_name", track.artist.name);
             params.putDouble("track_length", track.duration);
-            Log.d("MUSIC", "isPaused: " + playerState.isPaused + " position: " + playerState.playbackPosition);
+            //Log.d("MUSIC", "isPaused: " + playerState.isPaused + " position: " + playerState.playbackPosition);
             params.putBoolean("isPaused", playerState.isPaused);
             params.putDouble("position", playerState.playbackPosition);
             sendEvent(reactContext, "SongUpdate", params);

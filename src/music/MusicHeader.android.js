@@ -10,8 +10,13 @@ var count = 0;
 class MusicHeader extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      toggle: false,
+    };
   }
   componentDidMount() {
+    const {childRef} = this.props;
+    childRef(this);
     NativeModules.SpotifyInfo.startService();
     const eventEmitter = new NativeEventEmitter(NativeModules.SpotifyInfo);
     eventEmitter.addListener('SongUpdate', event => {
@@ -36,7 +41,7 @@ class MusicHeader extends Component {
         posTime = posTime.substr(3, 5);
       }
       var progBar = Math.round(
-        (this.props.playbackPosition / this.props.trackLength) * 100,
+        (this.props.playbackPosition / this.props.trackLength) * 180,
       );
       this.props.sendMessageCallback({
         music: {
@@ -45,10 +50,31 @@ class MusicHeader extends Component {
           track_length: durTime,
           playing: this.props.isPlaying,
           position: posTime,
-          progressBar: progBar,
+          progressBar: 180 - progBar,
         },
       });
     });
+  }
+
+  componentWillUnmount() {
+    const {childRef} = this.props;
+    childRef(undefined);
+  }
+
+  skip() {
+    NativeModules.SpotifyInfo.skip();
+  }
+
+  prev() {
+    NativeModules.SpotifyInfo.prev();
+  }
+
+  playpause() {
+    if (this.props.isPlaying) {
+      NativeModules.SpotifyInfo.pause();
+    } else {
+      NativeModules.SpotifyInfo.resume();
+    }
   }
 
   render() {
